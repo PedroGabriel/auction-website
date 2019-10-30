@@ -1,0 +1,132 @@
+<section class="pt-5">
+  <div class="container" *ngIf="!isLoading && user">
+    <div class="area-account-settings">
+      <div class="p-4 area-account-settings-title">
+        <h1>General Account Settings</h1>
+        <div class="account-settings-btnedit" style="float: right;margin-top: 33px;">
+          <a (click)="editing = !editing">{{ editing ? 'Cancel' : 'Edit' }}</a>
+        </div>
+      </div>
+
+      <div class="p-4" style="clear:both;" *ngIf="!editing">
+        <div class="row area-account-row">
+          <div class="col-sm-6 col-md-3 account-settings-type">
+            <strong>Name</strong>
+          </div>
+          <div class="col-sm-6 col-md-6 account-settings-value">
+            <p>{{ formData.value['name'] }}</p>
+          </div>
+        </div>
+        <hr />
+        <div class="row area-account-row">
+          <div class="col-sm-6 col-md-3 account-settings-type">
+            <strong>Email</strong>
+          </div>
+          <div class="col-sm-6 col-md-6 account-settings-value">
+            <p>{{ formData.value['email'] }}</p>
+          </div>
+        </div>
+        <hr />
+        <div class="row area-account-row">
+          <div class="col-sm-6 col-md-3 account-settings-type">
+            <strong>Phone</strong>
+          </div>
+          <div class="col-sm-6 col-md-6 account-settings-value">
+            <p>{{ formData.value['phone'] }}</p>
+          </div>
+        </div>
+        <hr />
+        <div class="row area-account-row">
+          <div class="col-sm-6 col-md-3 account-settings-type">
+            <strong>About</strong>
+          </div>
+          <div class="col-sm-6 col-md-6 account-settings-value">
+            <p>{{ formData.value['about'] }}</p>
+          </div>
+        </div>
+        <hr />
+        <div class="row area-account-row">
+          <div class="col-sm-6 col-md-3 account-settings-type">
+            <strong>Password</strong>
+          </div>
+          <div class="col-sm-6 col-md-6 account-settings-value">
+            <p>Change password</p>
+          </div>
+        </div>
+        <hr />
+      </div>
+
+      <div class="p-4" style="clear:both;" *ngIf="editing">
+        <form #frmData [formGroup]="formData">
+          <div class="row area-account-row">
+            <div class="col-3 account-settings-type">
+              <strong>Name</strong>
+            </div>
+            <div class="col-6 account-settings-value">
+              <input style="width:100%;" type="text" value="{{user?.name}}" formControlName="name" />
+            </div>
+          </div>
+          <hr />
+          <div class="row area-account-row">
+            <div class="col-3 account-settings-type">
+              <strong>Email</strong>
+            </div>
+            <div class="col-6 account-settings-value">
+              <input style="width:100%;" type="text" readonly value="{{user?.email}}" formControlName="email" />
+            </div>
+          </div>
+          <hr />
+          <div class="row area-account-row">
+            <div class="col-3 account-settings-type">
+              <strong>Phone</strong>
+            </div>
+            <div class="col-6 account-settings-value">
+              <input style="width:100%;" type="tel" value="{{user?.phone}}" formControlName="phone" />
+            </div>
+          </div>
+          <hr />
+          <div class="row area-account-row">
+            <div class="col-3 account-settings-type">
+              <strong>About</strong>
+            </div>
+            <div class="col-6 account-settings-value">
+              <p>
+                <textarea style="width:100%;" name="" formControlName="about">{{ user?.about }}</textarea>
+              </p>
+            </div>
+          </div>
+
+          <hr />
+          <div class="row area-account-row">
+            <div class="col-3 account-settings-type">
+              <strong>Change password</strong>
+            </div>
+            <div class="col-6 account-settings-value">
+              <input style="width:100%;" type="password" value="" formControlName="password" />
+            </div>
+          </div>
+          <hr />
+          <div class="row area-account-row">
+            <div class="col-3 account-settings-type">
+              <strong>Confirm new password</strong>
+            </div>
+            <div class="col-6 account-settings-value">
+              <input style="width:100%;" type="password" value="" formControlName="password_confirm" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="col-12">
+              <button type="button" class="btn-newcar-style float-right" (click)="submit()">
+                <!-- [disabled]="!formData.valid || isLoading"> -->
+                <i class="fas fa-cog fa-spin" [hidden]="!isLoading"></i> Save
+                <i class="ml-5 float-right icon ion-md-arrow-forward"></i>
+              </button>
+            </div>
+            <p class="alert alert-danger mt-2" *ngIf="errorMessage">{{errorMessage}}</p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

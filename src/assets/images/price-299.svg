@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="130" viewBox="0 0 200 130">
+    <g fill="none" fill-rule="evenodd" transform="translate(-3)">
+        <circle cx="103" cy="65" r="65" fill="#FDEEF1"/>
+        <g transform="translate(0 4)">
+            <circle cx="128" cy="53" r="12" fill="#FFF"/>
+            <text fill="#F05B7A" font-family="OpenSans-Bold, Open Sans" font-size="90" font-weight="bold">
+                <tspan x=".756" y="96">$299</tspan>
+            </text>
+        </g>
+    </g>
+</svg>

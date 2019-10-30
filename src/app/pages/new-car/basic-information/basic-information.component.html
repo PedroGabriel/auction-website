@@ -1,0 +1,400 @@
+<div id="breadcrumb-newcar">
+  <nav>
+    <ol>
+      <li class="waiting-approval">
+        <i class="icon ion-md-time"></i>
+      </li>
+      <li>Payment</li>
+      <li>Review</li>
+      <li>Records</li>
+      <li>Gallery</li>
+      <li>Information</li>
+      <li class="waiting-approval">
+        <i class="icon ion-md-time"></i>
+      </li>
+      <li class="active">Basic</li>
+    </ol>
+  </nav>
+</div>
+<section class="pt-5">
+  <div class="container-add-listing pt-5">
+    <h1 class="title-listing">Basic Information</h1>
+    <p class="text-inicial-listing pt-3">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus dapibus
+      <br /> mi id ante ultrices, nec hendrerit enim hendrerit. Sed nec diam turpis.
+    </p>
+
+    <div class="box-area-newcar container-form mt-5">
+      <form class="newcar-formstyle" (ngSubmit)="onSubmit()" [formGroup]="createListingsForm">
+
+        <div class="basic-form-tab1" [ngStyle]="{'display' : !showFirst ? 'initial' : 'none' }">
+          <div class="form-row mb-5">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Year</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <select name="" id="" class="form-control" formControlName="year" required>
+                <option value="">Select</option>
+                <option value="{{year}}" *ngFor="let year of range(1900, currentYear)">{{ year }}</option>
+              </select>
+              <!-- Validations -->
+              <div class="validation-errors">
+                <ng-container *ngFor="let validation of validationMsg.year">
+                  <div class="error-message" *ngIf="createListingsForm.get('year').hasError(validation.type) && (createListingsForm.get('year').dirty || createListingsForm.get('year').touched)">
+                    {{ validation.message }}
+                  </div>
+                </ng-container>
+              </div>
+              <!-- Fim -->
+            </div>
+          </div>
+
+          <div class="form-row mb-5">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Brand</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <select name="" id="" class="form-control" formControlName="brand" required>
+                <option value="">Select</option>
+                <option value="{{car.key}}" *ngFor="let car of brandsModels">{{ car.key }}
+                </option>
+              </select>
+              <!-- Validations -->
+              <div class="validation-errors">
+                <ng-container *ngFor="let validation of validationMsg.brand">
+                  <div class="error-message" *ngIf="createListingsForm.get('brand').hasError(validation.type) && (createListingsForm.get('brand').dirty || createListingsForm.get('brand').touched)">
+                    {{ validation.message }}
+                  </div>
+                </ng-container>
+              </div>
+              <!-- Fim -->
+            </div>
+          </div>
+
+          <div class="form-row mb-5">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Model</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <!-- <select2 [data]="getSelectedModels()" *ngIf="!isLoading" [value]="createListingsForm.value.model" (valueChanged)="changedSelect($event, 'model')"></select2> -->
+              <input class="form-control" type="text" ngxTypeahead formControlName="model" [value]="createListingsForm.value.model" [taList]="getSelectedModels()"
+                (taSelected)="changedSelect($event,'model')" [taItemTpl]="itemTpl" required>
+
+              <ng-template #itemTpl let-result>
+                <span>{{result.result}}</span>
+              </ng-template>
+
+              <!-- Validations -->
+              <div class="validation-errors">
+                <ng-container *ngFor="let validation of validationMsg.model">
+                  <div class="error-message" *ngIf="createListingsForm.get('model').hasError(validation.type) && (createListingsForm.get('model').dirty || createListingsForm.get('model').touched)">
+                    {{ validation.message }}
+                  </div>
+                </ng-container>
+              </div>
+              <!-- Fim -->
+            </div>
+          </div>
+
+          <div class="form-row mb-5">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Vehicle identification number (VIN)</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <input type="text" class="form-control" formControlName="vin" placeholder="1HGCM82633A004352">
+            </div>
+          </div>
+
+
+          <div class="form-row mb-5">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Reserve price?</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" id="radioreserveYes" name="reservePriceCheck" class="custom-control-input" value="1" formControlName="reservePriceCheck"
+                />
+                <label class="custom-control-label" for="radioreserveYes">Yes</label>
+              </div>
+              <div class="ml-5 custom-control custom-radio custom-control-inline">
+                <input type="radio" id="radioreserveNo" name="reservePriceCheck" class="custom-control-input" value="0" formControlName="reservePriceCheck"
+                />
+                <label class="custom-control-label" for="radioreserveNo">No</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row mb-5" *ngIf="createListingsForm.value.reservePriceCheck === '1'">
+            <div class="col-4 newcar-col-left">
+              <label for="">Suggested reserve price</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <input class="form-control" type="text" formControlName="reservePrice" placeholder="$ 00,000.00" />
+            </div>
+          </div>
+
+          <div class="form-row mb-5">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Years owned</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <select name="" id="" class="form-control" formControlName="yearsOwned">
+                <option value="">Select</option>
+                <option value="{{year}}" *ngFor="let year of range(1, 20).reverse(); last as isLast">{{ year }}
+                  <span *ngIf="isLast">+</span>
+                </option>
+              </select>
+
+              <!-- Validations -->
+              <div class="validation-errors">
+                <ng-container *ngFor="let validation of validationMsg.yearsOwned">
+                  <div class="error-message" *ngIf="createListingsForm.get('yearsOwned').hasError(validation.type) && (createListingsForm.get('yearsOwned').dirty || createListingsForm.get('yearsOwned').touched)">
+                    {{ validation.message }}
+                  </div>
+                </ng-container>
+              </div>
+              <!-- Fim -->
+            </div>
+          </div>
+
+          <div class="form-row mb-5">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Number of owners</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <select name="" id="" class="form-control" formControlName="owners">
+                <option value="">Select</option>
+                <option value="{{owners}}" *ngFor="let owners of range(1, 10).reverse(); last as isLast">{{ owners }}
+                  <span *ngIf="isLast">+</span>
+                </option>
+              </select>
+
+              <!-- Validations -->
+              <div class="validation-errors">
+                <ng-container *ngFor="let validation of validationMsg.owners">
+                  <div class="error-message" *ngIf="createListingsForm.get('owners').hasError(validation.type) && (createListingsForm.get('owners').dirty || createListingsForm.get('owners').touched)">
+                    {{ validation.message }}
+                  </div>
+                </ng-container>
+              </div>
+              <!-- Fim -->
+            </div>
+          </div>
+
+
+          <div class="form-row mb-5">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Roadworthy</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" id="radioRoadworthyYes" name="roadworthy" class="custom-control-input" value="1" formControlName="roadworthy"
+                />
+                <label class="custom-control-label" for="radioRoadworthyYes">Yes</label>
+              </div>
+              <div class="ml-5 custom-control custom-radio custom-control-inline">
+                <input type="radio" id="radioRoadworthyNo" name="roadworthy" class="custom-control-input" value="0" formControlName="roadworthy"
+                />
+                <label class="custom-control-label" for="radioRoadworthyNo">No</label>
+              </div>
+              <!-- Validations -->
+              <div class="validation-errors">
+                <ng-container *ngFor="let validation of validationMsg.roadworthy">
+                  <div class="error-message" *ngIf="createListingsForm.get('roadworthy').hasError(validation.type) && (createListingsForm.get('roadworthy').dirty || createListingsForm.get('roadworthy').touched)">
+                    {{ validation.message }}
+                  </div>
+                </ng-container>
+              </div>
+              <!-- Fim -->
+            </div>
+          </div>
+
+          <div class="form-row mb-5">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Accidents</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" id="radioAccidentesYes" name="accidents" class="custom-control-input" value="1" formControlName="accidents"
+                />
+                <label class="custom-control-label" for="radioAccidentesYes">Yes</label>
+              </div>
+              <div class="ml-5 custom-control custom-radio custom-control-inline">
+                <input type="radio" id="radioAccidentesNo" name="accidents" class="custom-control-input" value="0" formControlName="accidents"
+                />
+                <label class="custom-control-label" for="radioAccidentesNo">No</label>
+              </div>
+
+              <!-- Validations -->
+              <div class="validation-errors">
+                <ng-container *ngFor="let validation of validationMsg.accidents">
+                  <div class="error-message" *ngIf="createListingsForm.get('accidents').hasError(validation.type) && (createListingsForm.get('accidents').dirty || createListingsForm.get('accidents').touched)">
+                    {{ validation.message }}
+                  </div>
+                </ng-container>
+              </div>
+              <!-- Fim -->
+            </div>
+          </div>
+
+          <div class="form-row mb-4">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Mileage</label>
+            </div>
+            <div class="col-4 newcar-col-right">
+              <input type="Number" class="form-control" formControlName="mileage">
+              <!-- Validations -->
+              <div class="validation-errors">
+                <ng-container *ngFor="let validation of validationMsg.mileage">
+                  <div class="error-message" *ngIf="createListingsForm.get('mileage').hasError(validation.type) && (createListingsForm.get('mileage').dirty || createListingsForm.get('mileage').touched)">
+                    {{ validation.message }}
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+            <!-- Fim -->
+            <div class="col-4 newcar-col-right">
+              <select name="" id="" class="form-control" formControlName="mileageUnit">
+                <option value="">Select</option>
+                <option value="Km">Km</option>
+                <option value="Miles">Miles</option>
+              </select>
+              <!-- Validations -->
+              <div class="validation-errors">
+                <ng-container *ngFor="let validation of validationMsg.mileageUnit">
+                  <div class="error-message" *ngIf="createListingsForm.get('mileageUnit').hasError(validation.type) && (createListingsForm.get('mileageUnit').dirty || createListingsForm.get('mileageUnit').touched)">
+                    {{ validation.message }}
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row mb-5">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Reason for sale</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+
+              <textarea class="form-control" name="" id="" cols="30" rows="4" placeholder="Please type here..." formControlName="saleReason"></textarea>
+
+
+              <!-- Validations -->
+              <div class="validation-errors">
+                <ng-container *ngFor="let validation of validationMsg.saleReason">
+                  <div class="error-message" *ngIf="createListingsForm.get('saleReason').hasError(validation.type) && (createListingsForm.get('saleReason').dirty || createListingsForm.get('saleReason').touched)">
+                    {{ validation.message }}
+                  </div>
+                </ng-container>
+              </div>
+              <!-- Fim -->
+            </div>
+          </div>
+
+          <div class="form-row mb-5">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Detailed description of known issues</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <textarea class="form-control" name="" id="" cols="30" rows="4" formControlName="issues" placeholder="Please type here..."></textarea>
+            </div>
+          </div>
+
+          <hr>
+          <div class="col-12 form-car-bollets">
+            <span (click)="toggleStep(false)" [class.active]="!this.showFirst"></span>
+            <span (click)="toggleStep(true)" [class.active]="this.showFirst"></span>
+          </div>
+        </div>
+
+        <div class="basic-form-tab2" [ngStyle]="{'display' : showFirst ? 'initial' : 'none'}">
+          <div class="cow-12">
+            <p>Location</p>
+          </div>
+
+          <div class="col-12">
+            <label for="" class="pb-1">Zipcode</label>
+            <input class="form-control p-4" type="text" placeholder="Please type here..." autocomplete="off" autocorrect="off" autocapitalize="none"
+              spellcheck="false" #address formControlName="address" name="addressPlace" (focusout)="closeSearchGroup()" (focuson)="showSearchGroupToggle($event)" (paste)="showSearchGroupToggle($event)" (input)="showSearchGroupToggle($event)"
+              [(ngModel)]="searchData.input" />
+            <div class="alert alert-danger" style="margin-top:20px;" [hidden]="!(addressChanged && invalidAddress)" translate>
+              Please specify your address better. Are you missing the zipcode?
+            </div>
+            <ng-container *ngIf="showSearchGroup">
+              <div class="search-group-box">
+                <ul >
+                  <h4>Location</h4>
+                  <ng-container *ngIf=" (searchData.places.length > 0 || searchData.brands.length > 0)">
+                  <li *ngFor="let item of searchData.places" (click)="selectPlace(item)">
+                    <i class="icon ion-ios-pin"></i> {{item}}</li>
+                  </ng-container>
+                  <ng-container *ngIf=" (searchData.places.length == 0 && searchData.brands.length == 0)">
+                    <li >Searching...</li> 
+                  </ng-container> 
+                </ul>
+              </div>
+            </ng-container>
+          </div>
+
+          <div class="col-12" [hidden]="!(addressChanged && !invalidAddress)">
+            <label for="" class="pb-1 mt-1">Street Address</label>
+            <input class="form-control p-4" type="text" formControlName="address_name" #streetName [(ngModel)]="formData.address_name"
+            />
+          </div>
+
+          <div class="col-12 mt-2" [hidden]="!(addressChanged && !invalidAddress)">
+            <label for="" class="pb-1">City</label>
+            <input class="form-control p-4" type="text" formControlName="address_city" readonly="readonly" #city [(ngModel)]="formData.address_city"
+            />
+          </div>
+
+          <div class="col-12 mt-2" [hidden]="!(addressChanged && !invalidAddress)">
+            <label for="" class="pb-1">State</label>
+            <input class="form-control p-4" type="text" formControlName="address_state" readonly="readonly" #state [(ngModel)]="formData.address_state"
+            />
+          </div>
+
+          <div class="col-12 mt-2" [hidden]="!(addressChanged && !invalidAddress)">
+            <label for="" class="pb-1">Zipcode</label>
+            <input class="form-control p-4" type="text" #zipcode formControlName="address_zipcode" readonly="readonly" [(ngModel)]="formData.address_zipcode"
+            />
+          </div>
+
+          <div class="col-12 mt-2" [hidden]="!(addressChanged && !invalidAddress)">
+            <label for="" class="pb-1">Country</label>
+            <input class="form-control p-4" type="text" formControlName="address_country" readonly="readonly" #country [(ngModel)]="formData.address_country"
+            />
+          </div>
+
+          <hr>
+          <div class="col-12 form-car-bollets">
+            <span (click)="toggleStep(false)" [class.active]="!this.showFirst"></span>
+            <span (click)="toggleStep(true)" [class.active]="this.showFirst"></span>
+          </div>
+        </div>
+
+        <div class="form-row mt-2">
+          <div class="col-12">
+            <button type="submit" class="btn-newcar-style float-right" [disabled]=" isLoading || invalidAddress" [ngStyle]="{'display' : showFirst ? 'initial' : 'none'}">
+              <i class="fas fa-cog fa-spin" [hidden]="!isLoading"></i> Next step
+              <i class="ml-5 float-right icon ion-md-arrow-forward"></i>
+            </button>
+
+
+            <button class="btn-newcar-style float-right" [disabled]=" isLoading || invalidAddress " type="submit" [ngStyle]="{'display' : !showFirst ? 'initial' : 'none' }">
+              Next step
+              <i class="ml-5 float-right icon ion-md-arrow-forward"></i>
+            </button>
+          </div>
+        </div>
+
+        <ul class="errorBox" *ngIf="showFormError">
+          Please check all the required fields.
+        </ul>
+
+
+      </form>
+    </div>
+  </div>
+</section>
+<div class="pink-loading" *ngIf="isLoading"></div>

@@ -1,0 +1,235 @@
+<section class="pt-5">
+  <div class="container" *ngIf="!isLoading && user">
+    <div class="header-section d-flex align-items-end">
+      <div class="admin-page-title">
+        <h1>User {{user.name}}</h1>
+      </div>
+      <div class="user-detail-buttons ml-md-auto">
+        <button (click)="disableUser(user)" class="btn-admin-white d-flex align-items-center">
+          <i class="fas fa-cog fa-spin" [hidden]="!isLoading"></i>
+          {{user.disabled ? 'En' : 'Dis'}}able User
+        </button>
+        <a routerLink="/admin/user-edit/{{userId}}">
+          <button class="btn-admin-pink d-flex align-items-center">Edit user profile</button>
+        </a>
+      </div>
+    </div>
+    <div class="admin-content">
+      <div class="d-flex bd-highlight">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="admin-area admin-profile-box mr-2">
+              <div class="profile-info p-4">
+                <img src="assets/images/user-photo-50x50.jpg" class="profile-info-photo" alt="" *ngIf="!user.image" />
+                <img [src]="getImage(user.image)" class="profile-info-photo" *ngIf="user.image" />
+                <h3>{{user.name}}</h3>
+
+                <ul class="user-rate-group">
+                  <li [ngClass]="{checked: user.rating >= 1}"></li>
+                  <li [ngClass]="{checked: user.rating >= 2}"></li>
+                  <li [ngClass]="{checked: user.rating >= 3}"></li>
+                  <li [ngClass]="{checked: user.rating >= 4}"></li>
+                  <li [ngClass]="{checked: user.rating == 5}"></li>
+                </ul>
+              </div>
+              <div class="profile-about p-4" *ngIf="user.about">
+                <h3 class="activity-title">About</h3>
+                <p>
+                  {{user.about}}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="admin-area admin-profile-box ml-2">
+              <ul class="nav mb-3 nav-admin-user" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link" id="admin-user-data-tab" data-toggle="pill" (click)="changeTab('adminuserReviews')" [class.active]="currentTab == 'adminuserReviews'"
+                    role="tab" aria-controls="admin-user-data" aria-selected="true">Reviews </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="pills-profile-tab" data-toggle="pill" (click)="changeTab('adminusercars')" [class.active]="currentTab == 'adminusercars'"
+                    href="" role="tab" aria-controls="pills-profile" aria-selected="false">Cars bought/sold</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="pills-contact-tab" data-toggle="pill" (click)="changeTab('adminuserBid')" [class.active]="currentTab == 'adminuserBid'"
+                    href="" role="tab" aria-controls="pills-contact" aria-selected="false">Bid History</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="pills-contact-tab" data-toggle="pill" (click)="changeTab('adminuserComments')" [class.active]="currentTab == 'adminuserComments'"
+                    href="" role="tab" aria-controls="pills-contact" aria-selected="false">Comments </a>
+                </li>
+              </ul>
+              <div class="tab-content">
+                <!-- Reviews -->
+                <div class="tab-pane fade show" [class.active]="currentTab == 'adminuserReviews'" id="adminuserReviews" role="tabpanel" aria-labelledby="admin-user-data-tab">
+                  <div class="profile-list-reviews">
+                    <h5 class="profile-tabs-title">Reviews ({{ ratings.length }})</h5>
+
+                    <p *ngIf="ratings.length == 0">No information.</p>
+                    <ng-container *ngIf="ratings.length > 0 && !isLoading">
+                      <div class="profile-reviews-item" *ngFor="let item of ratings">
+                        <div class="profile-reviews-item-header d-flex mb-3" *ngIf="item.from != null">
+                          <a routerLink="/user-profile/{{item.from.id}}" (click)="initBidDetails()">
+                            <img [src]="getUserImage(item.from.image)" alt="" class="profiler-user-thumb" />
+                          </a>
+                          <div class="reviews-item-info ml-4">
+                            <a routerLink="/user-profile/{{item.from.id}}" (click)="initBidDetails()">
+                              <h4>{{item.from.name}}</h4>
+                            </a>
+                            <ul class="user-rate-group">
+                              <li [ngClass]="{checked: item.stars >= 1}"></li>
+                              <li [ngClass]="{checked: item.stars >= 2}"></li>
+                              <li [ngClass]="{checked: item.stars >= 3}"></li>
+                              <li [ngClass]="{checked: item.stars >= 4}"></li>
+                              <li [ngClass]="{checked: item.stars == 5}"></li>
+                            </ul>
+                            <span class="reviews-item-info-date">
+                              {{ item?.timestamp?._seconds | amFromUnix | amLocale: 'en' | amDateFormat: 'MMMM Do YYYY, h:mm:ss a' }}
+                            </span>
+                          </div>
+                        </div>
+                        <p [innerHTML]="item.comment">
+                        </p>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+
+                <!-- CARS -->
+                <div class="tab-pane fade show" [class.active]="currentTab == 'adminusercars'" id="adminusercars" role="tabpanel" aria-labelledby="pills-profile-tab">
+
+                  <p class="pl-4" *ngIf="listings.bought.length > 0">No information.</p>
+                  <div class="car-list-group">
+                    <ng-container *ngIf="listings.bought.length > 0">
+                      <h3>Bought ({{listings.bought.length}})</h3>
+                      <!-- Car -->
+
+                      <div class="d-md-flex car-list" *ngFor="let item of listings.bought;">
+                        <div>
+                          <img [src]="makeTrustedImage(item, item.cover)" alt="" class="img-fluid" />
+                        </div>
+                        <div class="">
+                          <div class="list-car-data">
+                            <p>
+                              <span>{{item.address.city}} - {{item.address.state}}</span>
+                            </p>
+                            <h3>{{item.year}} {{item.model}}</h3>
+                          </div>
+                          <div class="d-flex">
+                            <div class="list-car-currentbid">
+                              <span>Price sold</span>
+                              <p class="box-car-item-price">{{item.reservePrice | currency}}</p>
+                            </div>
+
+                            <div class="list-car-bids ml-5">
+                              <span>Bids</span>
+                              <p class="box-car-item-qtd-bids">{{item.bidCount}}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="listings.sold.length > 0">
+                      <h5 class="profile-tabs-title">Sold ({{listings.sold.length}})</h5>
+                      <!-- Car -->
+
+                      <div class="d-md-flex car-list" *ngFor="let item of listings.sold;">
+                        <div>
+                          <a routerLink="/bid-detail/{{item.id}}">
+                            <img [src]="makeTrustedImage(item, item.cover)" alt="" class="img-fluid" />
+                          </a>
+                        </div>
+                        <div class="">
+                          <div class="list-car-data">
+                            <span>{{item.address.city}} - {{item.address.state}}</span>
+                            <a routerLink="/bid-detail/{{item.id}}">
+                              <h3>{{item.year}} {{item.brand}} {{item.model}}</h3>
+                            </a>
+                          </div>
+                          <div class="d-flex">
+                            <div class="list-car-currentbid">
+                              <span class="titleinfobids">Price sold</span>
+                              <p class="box-car-item-price">{{ (item.price ? item.price : 0) | currency }}</p>
+                            </div>
+
+                            <div class="list-car-bids ml-5">
+                              <span class="titleinfobids">Bids</span>
+                              <p class="box-car-item-qtd-bids">{{item.bidCount}}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-container>
+                  </div>
+
+                </div>
+
+                <div class="tab-pane fade show" [class.active]="currentTab == 'adminuserBid'" id="adminuserBid" role="tabpanel" aria-labelledby="pills-contact-tab">
+                  <div class="admin-comments-list comments-list pl-4 pr-4" *ngIf="bids.length > 0">
+                    <h5 class="profile-tabs-title">Bid History ({{ bids.length }})</h5>
+
+                    <div class="comments-list-item" *ngFor="let item of bids">
+                      <div class="bidhistory-list-user">
+                        <div>
+                          <p class="admin-comented-user">
+                            Made a bid on
+                            <a routerLink="/bid-detail/{{item.listing.id}}">
+                              {{ item.listing.year }} {{ item.listing.brand }} {{ item.listing.model }}
+                            </a>
+                          </p>
+                          <p>
+                            {{item.user.name}} made a
+                            <b>{{ item.finalPrice | currency }}</b> bid.
+                          </p>
+                          <p class="bid-date-user">
+                            {{ item?.timestamp?._seconds | amFromUnix | amLocale: 'en' | amDateFormat: 'MMMM Do YYYY, h:mm:ss a' }}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div class="comments-list-actions">
+                        <!-- <a href="#" class="admin-deletecomment"><i class="icon ion-md-trash"></i> Delete Comment</a> -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Comments -->
+                <div *ngIf="comments" class="tab-pane fade show" [class.active]="currentTab == 'adminuserComments'" id="adminuserComments"
+                  role="tabpanel" aria-labelledby="pills-contact-tab">
+
+                  <div class="admin-comments-list comments-list pl-4 pr-4">
+                    <h5 class="profile-tabs-title">Comments ({{ comments.length }})</h5>
+
+                    <div class="comments-list-item" *ngFor="let comment of comments; let i = index">
+                      <div class="comments-list-user">
+                        <div>
+                          <p class="admin-comented-user">
+                            Commented on
+                            <a routerLink="/bid-detail/{{comment.listing.id}}">{{ comment.listing.year }} {{ comment.listing.model }}</a>
+                          </p>
+                          <p class="bid-date-user">
+                            {{ comment?.timestamp?._seconds | amFromUnix | amLocale: 'en' | amDateFormat: 'MMMM Do YYYY, h:mm:ss a' }}
+                          </p>
+                        </div>
+                      </div>
+                      <div class="comments-list-content">
+                        <p>{{ comment.comment }}</p>
+                      </div>
+                      <div class="comments-list-actions">
+                        <a (click)="deleteComment(comment.id, comment.listing.id, i)" class="admin-deletecomment">
+                          <i class="icon ion-md-trash"></i> Delete Comment</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

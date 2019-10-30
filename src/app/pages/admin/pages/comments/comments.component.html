@@ -1,0 +1,88 @@
+<div class="page-faq">
+  <div class="container">
+    <h1>Comments</h1>
+    <p class="comments-count-txt">{{comments.length || 0}} reported comments</p>
+    <div class="comments-area">
+      <!-- <div class="p-4" *ngIf="comments.length"> -->
+      <div class="comments-list-item" *ngFor="let comment of comments">
+        <div class="comments-list-user d-flex">
+          <div class="row">
+            <div class="col reported-date">
+              Reported on
+              <a routerLink="/bid-detail/{{comment.listing.id}}">{{comment?.listing?.year}} {{comment?.listing?.brand}} {{comment?.listing?.model}},</a>
+              for:
+              <strong>{{comment.message}}</strong>
+            </div>
+          </div>
+          <p class="bid-date-user">{{ comment?.timestamp?._seconds | amFromUnix | amTimeAgo }}</p>
+          <div class="d-flex">
+            <div class="profile-bid-user">
+              <a routerLink="/user-profile/{{comment.user.id}}" class="bid-title-user mb-0">
+                <img [src]="getUserImage(comment.user.image)" />
+              </a>
+            </div>
+            <div class="pl-4">
+              <a routerLink="/user-profile/{{comment.user.id}}" class="comment-title-user mb-0">{{ comment.user.name }}</a>
+              <p class="bid-date-user">{{ comment?.comment?.timestamp?._seconds | amFromUnix | amTimeAgo }}</p>
+            </div>
+          </div>
+
+        </div>
+        <div class="comments-list-content">
+          <p>{{ comment.comment.comment }}</p>
+        </div>
+        <div class="comments-list-actions d-flex">
+          <a (click)="openConfirm('report', comment.id)">
+            <i class="icon ion-md-flag"></i> Remove Report</a>
+          <a class="ml-4" (click)="openConfirm('comment', comment.id)">
+            <i class="icon ion-md-trash"></i> Delete Comment</a>
+        </div>
+      </div>
+      <!-- </div> -->
+    </div>
+  </div>
+</div>
+
+<ng-template #modalConfirm let-modal>
+  <div id="modalConfirm">
+
+    <div class="modal-header">
+      <button type="button" class="close" (click)="modal.dismiss()">
+        <i class="icon ion-md-close"></i>
+      </button>
+    </div>
+
+    <div class="modal-body text-center" style="padding:0 30px 30px 30px;">
+      <img src="assets/images/{{confirmIcon}}" alt="" style="width:120px;" />
+      <h5 class="modal-title">{{confirmLabel}}</h5>
+      <div class="row">
+        <div class="col">
+          <button class="modal-action-button modal-btn" (click)="modal.dismiss()">Cancel</button>
+        </div>
+        <div class="col">
+          <button class="modal-action-cancel align-middle" style="margin-top: 20px" (click)="reviewReport()">Delete</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</ng-template>
+
+<ng-template #modalSuccess let-modal>
+  <div id="modalSuccess">
+
+    <div class="modal-header">
+      <button type="button" class="close" (click)="modal.dismiss()">
+        <i class="icon ion-md-close"></i>
+      </button>
+    </div>
+
+    <div class="modal-body" style="padding:0 30px 30px 30px;">
+      <img src="assets/images/registersucessfully-icon.jpg" alt="" style="width:120px;" />
+      <h5 class="modal-title" id="modalSignUpSuccessLabel">Succesfully! Thank you for your request!</h5>
+
+      <button class="modal-action-button modal-btn" (click)="modal.dismiss()">Close</button>
+    </div>
+
+  </div>
+</ng-template>

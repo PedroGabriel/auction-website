@@ -1,0 +1,168 @@
+<style>
+  .loading {
+    visibility: hidden;
+  }
+</style>
+<section id="banner" class="d-flex">
+  <div class="banner-content">
+    <div class="banner-text">
+      <h1>Welcome to the future of collector car auctions.</h1>
+      <!-- <p>Morbi ac quam vehicula, tempor magna ac</p> -->
+    </div>
+  </div>
+
+  <form name="frmSearch" id="search-banner-area" class="d-flex bd-highlight">
+    <span class="bd-highlight">
+      <i class="icon ion-md-search"></i>
+    </span> 
+    <input class="flex-grow-1 bd-highlight" type="text" placeholder="Enter car brand or location (e.g. &quot;Ferrari&quot; or &quot;New York&quot; or &quot;10017&quot;)"
+      #searchHome name="searchHome" [(ngModel)]="searchData.input" (ngModelChange)="querySearch($event)" />
+    <a href="/search">
+      <button class="bd-highlight" (click)="search()">Search</button>
+    </a>
+    <ng-container *ngIf="showSearchGroup && (searchData.places.length > 0 || searchData.brands.length > 0)">
+      <div class="search-group-box">
+        <ul *ngIf="searchData.places.length > 0">
+          <h4>Location</h4>
+          <li *ngFor="let item of searchData.places" (click)="selectPlace(item)">
+            <i class="icon ion-ios-pin"></i> {{item}}</li>
+        </ul>
+        <ul *ngIf="searchData.brands.length > 0">
+          <h4>Car Brand</h4>
+          <ng-container *ngFor="let item of searchData.brands; let i = index">
+            <li (click)="selectBrand(item)">{{item}}</li>
+          </ng-container>
+        </ul>
+      </div>
+    </ng-container>
+  </form>
+
+  <div class="banner-mask"></div>
+  <img src="/assets/images/slider-01.jpg" alt="" />
+</section>
+
+<!-- About to end desktop -->
+<section class="pt-5">
+  <div class="container">
+    <div class="header-section d-md-flex">
+      <h2>About to end</h2>
+    </div>
+  </div>
+  <div class="container container-home-slider p-0">
+    <ngx-slick #sliderMaster class="slider-bid slider" [config]="listingsSlideConfig">
+      <!-- car -->
+      <ng-container *ngFor="let car of listingsEnding; let i = index">
+      <div ngxSlickItem *ngIf="timeLeft(car.auctionStart._seconds) - dateNow > 0 && checkAboutToEnd(car.auctionStart._seconds)" >
+        <div class="box-car-item" [class.loading]="car.loading">
+          <button class="btn-like" *ngIf="isAuth" [class.actived]="checkFollowing(car.id, i)" (click)="toggleFollowing(car.id, i)" id="btnLike{{i}}"></button>
+          <ngx-slick #sliderChildren class="box-car-slides" [config]="listingsSlideInnerConfig">
+
+
+            <ng-container *ngFor="let image of car?.approval; let i = index">
+              <div ngxSlickItem ngxSlickItem *ngIf="i < 5">
+                <a routerLink="/bid-detail/{{car.id}}">
+                  <img [src]="getThumb(image, 360)" alt="" criaturoImgDefault="{{image}}" />
+                </a>
+              </div>
+            </ng-container>
+          </ngx-slick>
+
+          <a routerLink="/bid-detail/{{car.id}}">
+            <div class="box-car-content">
+              <div class="box-car-data">
+                <h3>{{ car.year }} {{ car.brand }} {{ car.model }}
+                  <img class="inspection-badge" src="assets/images/badge.svg" style="display: inline" alt="Inspection approved" *ngIf="car.verified">
+                </h3>
+                <span class="box-car-city" *ngIf="car.address != undefined"> {{car.address.city}}, {{car.address.state}}, {{car.address.country}}</span>
+              </div>
+
+              <div class="list-area-pregressbar" *ngIf="car.auctionStart && car.auctionStart._seconds">
+                <div class="progressbar" [style.width]="percentage(car.auctionStart._seconds) + '%'"></div>
+              </div>
+
+
+              <div class="box-car-price d-flex">
+                <div class="flex-fill">
+                  <span>Current bid</span>
+                  <p class="box-car-item-price">{{ (car.price ? car.price : 0) | currency }}</p>
+                </div>
+                <div class="box-car-time-left flex-fill" *ngIf="car.auctionStart && car.auctionStart._seconds">
+                  <span>Time Left:</span>
+                  <span class="car-time-countdown">
+                    <countdown [config]="{ leftTime: timeLeft(car.auctionStart._seconds) - dateNow }">$!d!d $!h!h</countdown>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </ng-container>
+    </ngx-slick>
+  </div>
+</section>
+
+<section class="pt-5">
+  <div class="container">
+    <div class="header-section d-md-flex">
+      <h2>Available auctions</h2>
+    </div>
+    <div class="list-cars row">
+
+
+      <!-- Car -->
+      <ng-container *ngFor="let car of listings; let i = index" >
+      <div class="col-sm-6 col-md-6" [class.loading]="car.loading"  *ngIf="car.auctionStart != undefined && timeLeft(car.auctionStart._seconds) - dateNow > 0 && checkAvailableAuction(car.auctionStart._seconds)">
+        <div class="list-car-item">
+
+          
+          <button class="btn-like" *ngIf="isAuth" [class.actived]="checkFollowing(car.id)" (click)="toggleFollowing(car.id, i)"></button>
+          <ngx-slick #sliderChildren class="box-car-slides" [config]="listingsSlideInnerConfig">
+            <ng-container *ngFor="let image of car.approval; let i = index">
+              <div ngxSlickItem *ngIf="i < 5">
+                <a routerLink="/bid-detail/{{car.id}}">
+                  <img [src]="getThumb(image, 550)" alt="" criaturoImgDefault="{{image}}" />
+                </a>
+              </div>
+            </ng-container>
+          </ngx-slick>
+
+
+          <a routerLink="/bid-detail/{{car.id}}">
+            <div class="box-car-content">
+              <div class="box-car-data">
+                <h3>{{ car.year }} {{ car.brand }} {{ car.model }}
+                  <img class="inspection-badge" src="assets/images/badge.svg" alt="Inspection approved" *ngIf="car.verified">
+                </h3>
+                <span class="box-car-city" *ngIf="car.address != undefined"> {{car.address.city}}, {{car.address.state}}, {{car.address.country}}</span>
+              </div>
+
+              <div class="list-area-pregressbar" *ngIf="car.auctionStart && car.auctionStart._seconds">
+                <div class="progressbar" [style.width]="percentage(car.auctionStart._seconds) + '%'"></div>
+              </div>
+
+
+              <div class="box-car-price d-flex">
+                <div class="flex-fill">
+                  <span>Current bid</span>
+                  <p class="box-car-item-price">{{ (car.price ? car.price : 0) | currency }}</p>
+                </div>
+                <div class="box-car-time-left flex-fill" *ngIf="car.auctionStart && car.auctionStart._seconds">
+                  <span>Time Left:</span>
+                  <span class="car-time-countdown">
+                    <countdown [config]="{ leftTime: timeLeft(car.auctionStart._seconds) - dateNow }">$!d!d $!h!h</countdown>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </a>
+
+        </div>
+      </div>
+    </ng-container>
+      <!-- Car end -->
+    </div>
+
+  </div>
+</section>
+<div class="pink-loading" *ngIf="isLoading"></div>

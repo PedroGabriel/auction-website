@@ -1,0 +1,108 @@
+<section class="pt-5">
+  <div class="container" *ngIf="!isLoading">
+    <div class="area-account-settings">
+      <div class="p-4 area-account-settings-title">
+        <h1>Payment options</h1>
+      </div>
+      <div class="p-4">
+        <div class="row area-account-row">
+          <div class="col-sm-12 col-md-3">
+            <strong>Your credit cards</strong>
+          </div>
+          <div class="col-sm-12 col-md-9">
+            <div class="d-flex" *ngIf="paymentInfo.paymentMethodRegistered">
+              <p class="flex-fill card-info">
+                {{paymentInfo?.card?.brand}} ending in {{paymentInfo?.card?.last4}}
+                <br>
+                <!-- <strong>Name on card:</strong> Santiago Valentín<br> -->
+                <strong>Expires:</strong> {{paymentInfo?.card?.exp_month}}/{{paymentInfo?.card?.exp_year}}
+              </p>
+              <!-- <div class="buttons">
+                <button class="payment-button">Edit</button>
+                <button class="payment-button ml-4">Delete</button>
+              </div> -->
+              <a class="flex-fill delete-btn" (click)="openConfirm(modalConfirm)">
+                <strong>Delete</strong>
+              </a>
+            </div>
+            <hr *ngIf="paymentInfo.paymentMethodRegistered">
+            <div class="d-flex">
+              <p class="flex-fill">{{paymentInfo.paymentMethodRegistered ? 'Change' : 'Add'}} payment method</p>
+              <a class="flex-fill" (click)="openAdd(modalAddPayment)">
+                <strong>{{paymentInfo.paymentMethodRegistered ? 'Change' : 'Add'}} Card</strong>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<ng-template #modalAddPayment let-modal>
+  <div id="modalAddPayment">
+
+    <div class="modal-body">
+      <button type="button" class="close" (click)="modal.dismiss()" style="right: 25px;top: 25px;z-index: 2;position: absolute;">
+        <i class="icon ion-md-close"></i>
+      </button>
+      <h3>Add payment method</h3>
+      <form name="frmEditPayment" #frmEditPayment (ngSubmit)="changePayment(modalSuccess)">
+        <label>Name on Card</label>
+        <input type="text" class="form-control" placeholder="John Doe" />
+
+        <label for="card-number">Card Number</label>
+        <div id="card-number" class="form-control input empty"></div>
+
+        <div class="row">
+          <div class="col">
+            <label for="card-expiry">Valid Through</label>
+            <div id="card-expiry" class="form-control input empty"></div>
+          </div>
+          <div class="col">
+            <label for="card-cvc">CVV</label>
+            <div id="card-cvc" class="form-control input empty"></div>
+          </div>
+        </div>
+
+        <div id="card-errors" role="alert"></div>
+        <div class="d-flex">
+          <button type="button" class="close modal-action-cancel modal-btn mr-2" style="margin-top: 20px;" (click)="modal.dismiss()">Cancel</button>
+          <button class="modal-action-button modal-btn ml-2" type="submit">
+            <i class="fas fa-cog fa-spin mr-4" [hidden]="!isLoading"></i>Save</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</ng-template>
+
+<ng-template #modalConfirm let-modal>
+  <div id="modalConfirm">
+
+    <div class="modal-header">
+      <button type="button" class="close" (click)="modal.dismiss()">
+        <i class="icon ion-md-close"></i>
+      </button>
+    </div>
+
+    <div class="modal-body text-center" style="padding:0 30px 30px 30px;">
+      <h5 class="modal-title">Delete payment method</h5>
+      <div class="form-group text-left">
+        <label>Your Card</label>
+        <input class="form-control-plaintext card-info" readonly value="{{paymentInfo.card.brand}} ending in {{paymentInfo.card.last4}}">
+      </div>
+      <p class="delete-text">If you do not want this payment method to be displayed in your list of payment options, click "Confirm delete". </p>
+      <div class="row">
+        <div class="col">
+          <button class="modal-action-button modal-btn" (click)="modal.dismiss()">Cancel</button>
+        </div>
+        <div class="col">
+          <button class="modal-action-cancel modal-btn align-middle" style="margin-top: 20px" (click)="deletePayment()">
+            <i class="fas fa-cog fa-spin mr-4" [hidden]="!isLoading"></i>Confirm delete</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</ng-template>

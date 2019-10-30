@@ -1,0 +1,102 @@
+<section class="pt-5" *ngIf="!isLoading && listing != null">
+  <div class="container">
+    <div class="admin-content">
+      <div class="row">
+        <div class="col-md-7">
+          <div class="review-page admin-area admin-profile-box mr-2">
+            <img *ngIf="listing.approval" [src]="makeTrustedImage(listing.cover)" alt="" class="review-image-car">
+            <div class="pl-5 pr-5 pt-5" *ngIf="listing.address">
+              <h2>{{listing.year}} {{listing.brand}} {{listing.model}}</h2>
+              <p>{{listing.address.city}} - {{listing.address.state}}</p>
+
+              <div class="d-flex review-area-date">
+                <div class="review-price-sold flex-fill">
+                  <span>Price sold</span>
+                  <strong>{{listing.reservePrice | currency}}</strong>
+                </div>
+                <div class="review-date-sold flex-fill">
+                  <span>Date of sale</span>
+                  <strong>
+                    {{ listing?.timestamp?._seconds | amFromUnix | amLocale: 'en' | amDateFormat: 'MMMM Do YYYY' }}
+                  </strong>
+                </div>
+              </div>
+            </div>
+
+            <hr>
+
+            <div class="pl-5 pr-5 pb-5">
+              <h3 class="reviewtitle">Rate your experience</h3>
+
+              <!-- <ngb-rating [(rate)]="currentRate"></ngb-rating> -->
+              <ul class="buttons-rate-group">
+                <li [ngClass]="{checked: review.rating >= 1}" (click)="changeRating(1)">
+                  <small>Terrible</small>
+                </li>
+                <li [ngClass]="{checked: review.rating >= 2}" (click)="changeRating(2)">
+                  <small>Bad</small>
+                </li>
+                <li [ngClass]="{checked: review.rating >= 3}" (click)="changeRating(3)">
+                  <small>Average</small>
+                </li>
+                <li [ngClass]="{checked: review.rating >= 4}" (click)="changeRating(4)">
+                  <small>Good</small>
+                </li>
+                <li [ngClass]="{checked: review.rating == 5}" (click)="changeRating(5)">
+                  <small>Great</small>
+                </li>
+              </ul>
+              <!-- <img src="assets/images/buttons-rate.jpg" alt="" class="review-button-rate"> -->
+
+              <form name="frmReview" #frmReview (ngSubmit)="submit(modalSuccess)" class="frmReview" [formGroup]="frmReviewGroup">
+                <h3 class="reviewtitle">Give us a comment</h3>
+                <textarea formControlName="comment" name="comment" [(ngModel)]="review.comment" id="" cols="30" rows="10" placeholder="Leave your comment here"></textarea>
+
+                <button class="review-btn-submit" type="submit">Submit</button>
+              </form>
+            </div>
+
+
+          </div>
+        </div>
+        <div class="col-md-5" *ngIf="listing.user != null">
+          <div class="review-page admin-area admin-profile-box ml-2 p-5">
+            <a routerLink="/user-profile/{{listing.user.id}}">
+              <img [src]="getUserImage(listing.user.image)" class="profile-info-photo" alt="">
+              <h3>{{listing.user.name}}</h3>
+            </a>
+            <ul class="user-rate-group">
+              <li [ngClass]="{checked: listing.user.rating >= 1}"></li>
+              <li [ngClass]="{checked: listing.user.rating >= 2}"></li>
+              <li [ngClass]="{checked: listing.user.rating >= 3}"></li>
+              <li [ngClass]="{checked: listing.user.rating >= 4}"></li>
+              <li [ngClass]="{checked: listing.user.rating == 5}"></li>
+            </ul>
+            <hr>
+            <h4>About</h4>
+            <p [innerHTML]="listing.user.about"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<ng-template #modalSuccess let-modal>
+  <div id="modalSuccess">
+
+    <div class="modal-header">
+      <button type="button" class="close" (click)="modal.dismiss()">
+        <i class="icon ion-md-close"></i>
+      </button>
+    </div>
+
+    <div class="modal-body" style="padding:0 30px 30px 30px;">
+      <img src="assets/images/registersucessfully-icon.jpg" alt="" style="width:120px;" />
+      <h5 class="modal-title" id="modalSignUpSuccessLabel">Succesfully! Thank you for your request!</h5>
+
+      <button class="modal-action-button modal-btn" (click)="modal.dismiss()">Close</button>
+    </div>
+
+  </div>
+</ng-template>

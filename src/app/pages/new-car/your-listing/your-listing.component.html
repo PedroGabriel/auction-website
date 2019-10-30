@@ -1,0 +1,94 @@
+<style>
+  .dropdown-toggle::after {
+    content: none;
+  }
+
+  .btn-outline {
+    width: 38px;
+    height: 38px;
+    border-radius: 1.5px;
+    background-color: #ffffff;
+    top: 15px;
+    right: 15px;
+  }
+</style>
+<section class="pt-5">
+  <div class="container-add-listing pt-5">
+    <h1 class="title-listing">Your listings</h1>
+    <p class="text-inicial-listing pt-3">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus dapibus
+      <br /> mi id ante ultrices, nec hendrerit enim hendrerit. Sed nec diam turpis.
+    </p>
+
+    <a routerLink="/new-car/basic-information">
+      <div class="addlisting d-flex mt-5">
+        <div class="addlisting-area-photo">
+          <i class="icon ion-md-car"></i>
+        </div>
+        <div class="flex-fill addlisting-area-btn">
+          <p>+ Create a new listing</p>
+        </div>
+      </div>
+    </a>
+    <div class="list-box-newlisting">
+      <div class="item-listing d-flex flex-md-row flex-column mt-5" *ngFor="let car of listings; index as id" [class.loading]="car.loading">
+        <a (click)="carClick(car)">
+          <div class=" item-listing-area-photo">
+            <img *ngIf="car.approval && car.approval[0]" [src]="makeTrustedImage(car, car.cover)" alt="" />
+          </div>
+        </a>
+        <a (click)="carClick(car)" class="flex-fill item-listing-area-dados">
+          <h3>{{ car.year }} {{ car.brand }} {{ car.model }}
+            <img class="inspection-badge" src="assets/images/badge.svg" alt="Inspection approved" *ngIf="car.verified">
+          </h3>
+          <p *ngIf="car.address && car.address.name && car.address.state && car.address.zipcode">
+            {{car.address.name}}, {{car.address.state}} - {{car.address.zipcode}}
+          </p>
+
+          <div class="area-loader-approval mt-5">
+            <span *ngIf="car.state == 'pending' || car.state == 'approved' || car.state == 'pre-approved'">
+              {{ registerStepsLabel[registerSteps.indexOf(car.registerStep)] == 'Complete' ? 'Waiting to be published' : registerStepsLabel[registerSteps.indexOf(car.registerStep)]
+              }}
+            </span>
+            <span *ngIf="car.state == 'live'">
+              Published
+            </span>
+            <span *ngIf="car.state == 'closed'">
+              Closed
+            </span>
+            <span *ngIf="car.state == 'pre-approval rejected'">
+              Rejected
+            </span>
+
+            <span *ngIf="car.state == 'approval rejected'">
+              Rejected
+            </span>
+
+
+
+            <div class="loader-approval d-flex mt-3">
+              <div class="item-loader-progressbar flex-fill mr-2" [class.aproved]="registerStep(car) >= 0"></div>
+              <div class="item-loader-progressbar flex-fill mr-2" [class.aproved]="registerStep(car) >= 1"></div>
+              <div class="item-loader-progressbar flex-fill mr-2" [class.aproved]="registerStep(car) >= 2"></div>
+              <div class="item-loader-progressbar flex-fill mr-2" [class.aproved]="registerStep(car) >= 4"></div>
+              <div class="item-loader-progressbar flex-fill mr-2" [class.aproved]="registerStep(car) >= 5"></div>
+              <div class="item-loader-progressbar flex-fill mr-2" [class.aproved]="registerStep(car) >= 6"></div>
+              <div class="item-loader-progressbar flex-fill mr-2" [class.aproved]="registerStep(car) >= 7"></div>
+            </div>
+          </div>
+        </a>
+        <div ngbDropdown placement="bottom-right" *ngIf="car.state == 'live' || car.registerStep != 'complete' && car.state == 'pending' || car.state == 'pre-approval rejected' || car.state == 'approval rejected'"
+          style="top: 15px; right: 15px; position: absolute;">
+          <button id="dropdown{{id}}" class="btn btn-outline" ngbDropdownToggle>•••</button>
+          <div ngbDropdownMenu attr.aria-labelledby="dropdown{{id}}">
+            <a class="dropdown-item" (click)="carClick(car, 'edit')" *ngIf="car.registerStep != 'complete' && car.state == 'pending'">Edit auction</a>
+            <a class="dropdown-item" [routerLink]="'/inspection/'+ car.id" *ngIf="car.state == 'live' && car.inspectionRequested">Submit Inspection</a>
+            <a class="dropdown-item" (click)="carClick(car, 'close')" *ngIf="car.state == 'live'">Close auction</a>
+            <a class="dropdown-item" (click)="carClick(car, 'standby')" *ngIf="car.state == 'live'">Turn Standby</a>
+            <a class="dropdown-item" (click)="carClick(car, 'delete')" *ngIf="car.state == 'pre-approval rejected' || car.state == 'approval rejected'">Delete auction</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,48 @@
+<section class="pt-5">
+  <div class="container-add-listing">
+    <h1 class="title-listing">Inspection</h1>
+    <p class="text-inicial-listing pt-3">
+      Um dolor sit amet, consectetur adipiscing elit. Phasellus
+      <br /> dapibus mi id ante ultrices, nec hendrerit
+    </p>
+    <div class="box-area-newcar mt-5 p-5">
+      <input type="file" accept="*" #inspectionFile style="display:none" (change)="uploadFiles(inspectionFile.files)">
+
+      <ul class="box-upload-eventos" *ngIf="msgEvento.length > 0">
+        <li *ngFor="let item of msgEvento">
+          <span [innerHTML]="item"></span>
+        </li>
+      </ul>
+
+      <div criaturoDnd class="uploadimages form-row dropzone" (filesChangeEmiter)="onInspectionFilesChange($event)" (filesInvalidEmiter)="onFileInvalids($event)"
+        (msgEventoEmiter)="onMsgEvento($event)" [allowed_extensions]="allowed_extensions">
+        <img src="{{inspFile ? 'assets/images/inspection-green.svg' : 'assets/images/inspection.svg'}}" class="box-upload-image"
+        />
+        <h2 *ngIf="!inspFile">Drag and drop file here</h2>
+        <h2 *ngIf="inspFile">{{inspFile.filename}}</h2>
+        <small *ngIf="!inspFile">OR</small>
+        <button class="btn-upload-photo" (click)="inspectionFile.click()" type="button">Select Files</button>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center">
+        <p class="text-left text-inicial-listing pr-2">Um dolor sit amet, consectetur adipiscing elit. Phasellus dapibus mi id ante ultrices, nec hendrerit</p>
+        <button class="btn-upload-photo" (click)="sendInspection()" type="button" *ngIf="inspFile">
+          <i class="fas fa-cog fa-spin" [hidden]="!isLoading"></i> Submit
+          <i class="ml-5 float-right icon ion-md-arrow-forward"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<ng-template #modalLoading let-modal>
+  <div id="modalLoading">
+
+    <div class="modal-body">
+      <div class="row">
+        <h3>Processing</h3>
+        <p>Uploading files... Please wait!</p>
+      </div>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,434 @@
+<style>
+  a {
+    color: white;
+    text-decoration: none;
+  }
+</style>
+<div id="breadcrumb-newcar">
+  <nav>
+    <ol>
+      <li class="waiting-approval">
+        <i class="icon ion-md-time"></i>
+      </li>
+      <li>Payment</li>
+      <li>Review</li>
+      <li>Records</li>
+      <li>Gallery</li>
+      <li class="active">Information</li>
+      <li class="waiting-approval active">
+        <i class="icon ion-md-time"></i>
+      </li>
+      <li class="active">
+        <a routerLink="/new-car/basic-information/{{listing}}">Basic</a>
+      </li>
+    </ol>
+  </nav>
+</div>
+<ng-container *ngIf="!showForm">
+
+  <section class="pt-5">
+    <div class="container-add-listing">
+      <div class="box-area-newcar area-waitingapproval mt-5 p-5" *ngIf="detail != null">
+        <img src="assets/images/icon-waiting-approval.png" alt="" />
+        <h1 class="title-listing" *ngIf="detail.state == 'pre-approval rejected' || detail.state == 'approval rejected'">Listing rejected</h1>
+        <h1 class="title-listing" *ngIf="detail.state != 'pre-approval rejected' && detail.state != 'approval rejected'">Listing approved</h1>
+        <p class="text-inicial-listing pt-3" *ngIf="detail.state != 'pre-approval rejected' && detail.state != 'approval rejected'">
+          Listing approved. Thank you for the patience. You can proceed to the next steps.
+        </p>
+        <p class="text-inicial-listing pt-3" *ngIf="detail.state == 'pre-approval rejected' || detail.state == 'approval rejected'">
+          Listing rejected. Please checkout the administrators comments to se what needs to be changed.
+        </p>
+
+        <div class="area-waitingapproval-content" *ngIf="detail != null && detail.comment != null">
+          <h5>Comments of {{detail.state == 'pre-approval rejected' || detail.state == 'approval rejected' ? 'rejection' : 'approval'}}</h5>
+          <blockquote class="comments" [innerHTML]="detail.comment"></blockquote>
+        </div>
+
+        <hr />
+        <div class="row">
+          <div class="col-12">
+            <button class="btn-newcar-style float-right" (click)="showForm = true">
+              Next step
+              <i class="ml-5 float-right icon ion-md-arrow-forward"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</ng-container>
+<ng-container *ngIf="showForm">
+  <section class="pt-5">
+    <div class="container-add-listing pt-5">
+      <h1 class="title-listing">Additional Information</h1>
+      <p class="text-inicial-listing pt-3">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus dapibus
+        <br /> mi id ante ultrices, nec hendrerit enim hendrerit. Sed nec diam turpis.
+      </p>
+
+      <div class="box-area-newcar container-form mt-5">
+        <form action="" class="newcar-formstyle" (ngSubmit)="finalizeForm()" [formGroup]="editListingsForm" novalidate>
+          <div class="form-row mb-4">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Vehicle description - summarize exterior, interior and mechanical condition.</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <!-- <textarea class="form-control" placeholder="Any comment or additional information? Let us know." name="" id="" cols="30"
+                rows="4" formControlName="description" [froalaEditor]="configEditor" (froalaModelChange)="onChange($event)"
+                [(froalaModel)]="description"></textarea> -->
+              <editor formControlName="description" [init]="tinyMceSettings"></editor>
+
+            </div>
+            <!-- Validations -->
+            <div class="validation-errors">
+              <ng-container *ngFor="let validation of validationMsg.description">
+                <div class="error-message" *ngIf="editListingsForm.get('description').hasError(validation.type) && (editListingsForm.get('description').dirty || editListingsForm.get('description').touched)">
+                  {{ validation.message }}
+                </div>
+              </ng-container>
+            </div>
+            <!-- Fim -->
+          </div>
+
+          <div class="form-row mb-4">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Fuel type</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <select name="" id="" class="form-control" formControlName="fuelType">
+                <option value="">Select</option>
+                <option value="Gasoline">Gasoline</option>
+                <option value="Diesel">Diesel</option>
+                <option value="Methanol">Methanol</option>
+                <option value="Natural gas">Natural gas</option>
+                <option value="Biodiesel">Biodiesel</option>
+                <option value="Electric">Electric</option>
+              </select>
+            </div>
+            <!-- Validations -->
+            <div class="validation-errors">
+              <ng-container *ngFor="let validation of validationMsg.fuelType">
+                <div class="error-message" *ngIf="editListingsForm.get('fuelType').hasError(validation.type) && (editListingsForm.get('fuelType').dirty || editListingsForm.get('fuelType').touched)">
+                  {{ validation.message }}
+                </div>
+              </ng-container>
+            </div>
+            <!-- Fim -->
+          </div>
+
+          <div class="form-row mb-4">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Transmission</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <select name="" id="" class="form-control" formControlName="gearbox">
+                <option value="">Select</option>
+                
+                   <option value="2-speed, automatic">2-speed, automatic</option>
+                  <option value="3-speed, automatic">3-speed, automatic</option>
+                  <option value="4-speed, automatic">4-speed, automatic</option>
+                  <option value="5-speed, automatic">5-speed, automatic</option>
+                  <option value="6-speed, automatic">6-speed, automatic</option>
+                  <option value="7-speed, automatic">7-speed, automatic</option>
+                  <option value="8-speed, automatic">8-speed, automatic</option>
+                  <option value="3-speed, manual">3-speed, manual</option>
+                  <option value="4-speed, manual">4-speed, manual</option>
+                  <option value="5-speed, manual">5-speed, manual</option>
+                  <option value="6-speed, manual">6-speed, manual</option>
+                  <option value="7-speed, manual">7-speed, manual</option>
+                  <option value="5-speed, F1 / DSG / SMG">5-speed, F1 / DSG / SMG</option>
+                  <option value="6-speed, F1 / DSG / SMG">6-speed, F1 / DSG / SMG</option>
+                  <option value="7-speed, F1 / DSG / SMG">7-speed, F1 / DSG / SMG</option>
+                  <option value="8-speed, F1 / DSG / SMG">8-speed, F1 / DSG / SMG</option>
+              </select>
+            </div>
+            <!-- Validations -->
+            <div class="validation-errors">
+              <ng-container *ngFor="let validation of validationMsg.gearbox">
+                <div class="error-message" *ngIf="editListingsForm.get('gearbox').hasError(validation.type) && (editListingsForm.get('gearbox').dirty || editListingsForm.get('gearbox').touched)">
+                  {{ validation.message }}
+                </div>
+              </ng-container>
+            </div>
+            <!-- Fim -->
+          </div>
+
+          <div class="form-row mb-4">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Drivetrain Type</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <select name="" id="" class="form-control" formControlName="transmission">
+                <option value="">Select</option>
+                <option value="2WD">2WD</option>
+                <option value="4WD">4WD</option>
+                <option value="AWD">AWD</option>
+              </select>
+            </div>
+            <!-- Validations -->
+            <div class="validation-errors">
+              <ng-container *ngFor="let validation of validationMsg.transmission">
+                <div class="error-message" *ngIf="editListingsForm.get('transmission').hasError(validation.type) && (editListingsForm.get('transmission').dirty || editListingsForm.get('transmission').touched)">
+                  {{ validation.message }}
+                </div>
+              </ng-container>
+            </div>
+            <!-- Fim -->
+          </div>
+
+
+          <div class="form-row mb-4">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Engine size</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <input type="text" class="form-control" formControlName="engineSize">
+<!--               <select name="" id="" class="form-control" formControlName="engineSize">
+                <option value="">Select</option>
+                <option value="{{engine}}L" *ngFor="let engine of range(1, 7, 0.1).reverse()">{{ engine | number: '1.1-1' }}L
+                </option>
+                <option value="8.0L">8.0L
+                </option>
+              </select> -->
+            </div>
+            <!-- Validations -->
+            <div class="validation-errors">
+              <ng-container *ngFor="let validation of validationMsg.engineSize">
+                <div class="error-message" *ngIf="editListingsForm.get('engineSize').hasError(validation.type) && (editListingsForm.get('engineSize').dirty || editListingsForm.get('engineSize').touched)">
+                  {{ validation.message }}
+                </div>
+              </ng-container>
+            </div>
+            <!-- Fim -->
+          </div>
+
+
+          <div class="form-row mb-4">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Number of cylinders</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <select name="" id="" class="form-control" formControlName="cylinders">
+                <option value="">Select</option>
+                <option value="4">4</option>
+                <option value="6">6</option>
+                <option value="8">8</option>
+              </select>
+            </div>
+            <!-- Validations -->
+            <div class="validation-errors">
+              <ng-container *ngFor="let validation of validationMsg.cylinders">
+                <div class="error-message" *ngIf="editListingsForm.get('cylinders').hasError(validation.type) && (editListingsForm.get('cylinders').dirty || editListingsForm.get('cylinders').touched)">
+                  {{ validation.message }}
+                </div>
+              </ng-container>
+            </div>
+            <!-- Fim -->
+          </div>
+
+
+          <div class="form-row mb-4">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Engine top speed</label>
+            </div>
+            <div class="col-4 newcar-col-right">
+              <input type="Number" class="form-control" formControlName="engineTopSpeed">
+              <div class="validation-errors">
+                <ng-container *ngFor="let validation of validationMsg.engineTopSpeed">
+                  <div class="error-message" *ngIf="editListingsForm.get('engineTopSpeed').hasError(validation.type) && (editListingsForm.get('engineTopSpeed').dirty || editListingsForm.get('engineTopSpeed').touched)">
+                    {{ validation.message }}
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+
+            <div class="col-4 newcar-col-right">
+              <select name="" id="" class="form-control" formControlName="engineTopSpeedUnits">
+                <option value="">Select</option>
+                <option value="mph">mph</option>
+                <option value="km/h">km/h</option>
+              </select>
+              <!-- Validations -->
+              <div class="validation-errors">
+                <ng-container *ngFor="let validation of validationMsg.engineTopSpeedUnits">
+                  <div class="error-message" *ngIf="editListingsForm.get('engineTopSpeedUnits').hasError(validation.type) && (editListingsForm.get('engineTopSpeedUnits').dirty || editListingsForm.get('engineTopSpeedUnits').touched)">
+                    {{ validation.message }}
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+
+            <!-- Fim -->
+          </div>
+
+          <div class="form-row mb-4">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Interior seats material</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <select name="" id="" class="form-control" formControlName="seatsMaterial">
+                <option value="">Select</option>
+                <option value="Leather">Leather</option>
+                <option value="Vinyl">Vinyl</option>
+                <option value="Cloth">Cloth</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <!-- Validations -->
+            <div class="validation-errors">
+              <ng-container *ngFor="let validation of validationMsg.seatsMaterial">
+                <div class="error-message" *ngIf="editListingsForm.get('seatsMaterial').hasError(validation.type) && (editListingsForm.get('seatsMaterial').dirty || editListingsForm.get('seatsMaterial').touched)">
+                  {{ validation.message }}
+                </div>
+              </ng-container>
+            </div>
+            <!-- Fim -->
+          </div>
+
+          <div class="form-row mb-4">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Exterior color (color code optional)</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <input type="text" class="form-control" formControlName="exteriorColorCode">
+            </div>
+            <!-- Validations -->
+            <div class="validation-errors">
+              <ng-container *ngFor="let validation of validationMsg.exteriorColorCode">
+                <div class="error-message" *ngIf="editListingsForm.get('exteriorColorCode').hasError(validation.type) && (editListingsForm.get('exteriorColorCode').dirty || editListingsForm.get('exteriorColorCode').touched)">
+                  {{ validation.message }}
+                </div>
+              </ng-container>
+            </div>
+            <!-- Fim -->
+          </div>
+
+          <div class="form-row mb-4">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Interior color (color code optional)</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <input type="text" class="form-control" formControlName="trimColorCode">
+            </div>
+            <!-- Validations -->
+            <div class="validation-errors">
+              <ng-container *ngFor="let validation of validationMsg.trimColorCode">
+                <div class="error-message" *ngIf="editListingsForm.get('trimColorCode').hasError(validation.type) && (editListingsForm.get('trimColorCode').dirty || editListingsForm.get('trimColorCode').touched)">
+                  {{ validation.message }}
+                </div>
+              </ng-container>
+            </div>
+            <!-- Fim -->
+          </div>
+
+          <div class="form-row mb-4">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Vehicle factory options</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <textarea name="" id="" cols="30" rows="5" class="form-control" formControlName="factoryOptions" placeholder="Any comment or additional information? Let us know."></textarea>
+            </div>
+            <!-- Validations -->
+            <div class="validation-errors">
+              <ng-container *ngFor="let validation of validationMsg.factoryOptions">
+                <div class="error-message" *ngIf="editListingsForm.get('factoryOptions').hasError(validation.type) && (editListingsForm.get('factoryOptions').dirty || editListingsForm.get('factoryOptions').touched)">
+                  {{ validation.message }}
+                </div>
+              </ng-container>
+            </div>
+            <!-- Fim -->
+          </div>
+
+
+
+          <div class="form-row mb-4">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Modifications</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <textarea name="" id="" cols="30" rows="5" class="form-control" formControlName="modifications" placeholder="Any comment or additional information? Let us know."></textarea>
+            </div>
+            <!-- Validations -->
+            <div class="validation-errors">
+              <ng-container *ngFor="let validation of validationMsg.modifications">
+                <div class="error-message" *ngIf="editListingsForm.get('modifications').hasError(validation.type) && (editListingsForm.get('modifications').dirty || editListingsForm.get('modifications').touched)">
+                  {{ validation.message }}
+                </div>
+              </ng-container>
+            </div>
+            <!-- Fim -->
+          </div>
+
+          <div class="form-row mb-4">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Detailed description of known issues</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <textarea name="" id="" cols="30" rows="5" class="form-control" formControlName="knownIssues" placeholder="Any comment or additional information? Let us know."></textarea>
+            </div>
+            <!-- Validations -->
+            <div class="validation-errors">
+              <ng-container *ngFor="let validation of validationMsg.knownIssues">
+                <div class="error-message" *ngIf="editListingsForm.get('knownIssues').hasError(validation.type) && (editListingsForm.get('knownIssues').dirty || editListingsForm.get('knownIssues').touched)">
+                  {{ validation.message }}
+                </div>
+              </ng-container>
+            </div>
+            <!-- Fim -->
+          </div>
+          <div class="form-row mb-4">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Listing of major issues</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <textarea name="" id="" cols="30" rows="5" class="form-control" formControlName="majorIssues" placeholder=""></textarea>
+            </div>
+            <!-- Validations -->
+            <div class="validation-errors">
+              <ng-container *ngFor="let validation of validationMsg.majorIssues">
+                <div class="error-message" *ngIf="editListingsForm.get('majorIssues').hasError(validation.type) && (editListingsForm.get('majorIssues').dirty || editListingsForm.get('majorIssues').touched)">
+                  {{ validation.message }}
+                </div>
+              </ng-container>
+            </div>
+            <!-- Fim -->
+          </div>
+
+          <div class="form-row mb-4">
+            <div class="col-4 newcar-col-left">
+              <label for="" class="pb-1">Other items of interest that you would like to mention</label>
+            </div>
+            <div class="col-8 newcar-col-right">
+              <textarea name="" id="" cols="30" rows="5" class="form-control" formControlName="watchout" placeholder="Any comment or additional information? Let us know."></textarea>
+            </div>
+            <!-- Validations -->
+            <div class="validation-errors">
+              <ng-container *ngFor="let validation of validationMsg.watchout">
+                <div class="error-message" *ngIf="editListingsForm.get('watchout').hasError(validation.type) && (editListingsForm.get('watchout').dirty || editListingsForm.get('watchout').touched)">
+                  {{ validation.message }}
+                </div>
+              </ng-container>
+            </div>
+            <!-- Fim -->
+          </div>
+
+
+
+          <hr>
+
+
+          <div class="form-row">
+            <div class="col-12">
+
+              <button type="submit" class="btn-newcar-style float-right">
+                <i class="fas fa-cog fa-spin" [hidden]="!isLoading"></i> Next step
+                <i class="ml-5 float-right icon ion-md-arrow-forward"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+  <div class="pink-loading" *ngIf="isLoading"></div>

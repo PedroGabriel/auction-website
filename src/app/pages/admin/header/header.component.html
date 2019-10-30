@@ -1,0 +1,25 @@
+<header class="shadow-sm admin-header">
+  <div class="d-flex flex-column flex-md-row align-items-center p-3 container header-container">
+    <a href="/" class="logotipo mr-md-5"
+      ><div class="arealogo"><img src="assets/images/logotipo_white.png" /></div
+    ></a>
+
+    <div class="ml-md-3 area-search d-flex">
+      <button><i class="icon ion-md-search"></i></button>
+      <input
+        type="search"
+        class="w-100 input-search mr-md-auto"
+        placeholder="Search for car type e region"
+        aria-label="Search"
+      />
+    </div>
+
+    <nav class="menu ml-md-auto d-flex align-items-center">
+      <a routerLink="/admin/" routerLinkActive="current" class="p-3">Manage listings</a>
+      <a routerLink="/admin/listings" routerLinkActive="current" class="p-3">Listings</a>
+      <a routerLink="/admin/comments" routerLinkActive="current" class="p-3">Comments</a>
+      <a routerLink="/admin/users" routerLinkActive="current" class="p-3">Users</a>
+      <a href="/" class="pl-2 header-logout"><i class="icon ion-md-log-out"></i></a>
+    </nav>
+  </div>
+</header>

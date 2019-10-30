@@ -1,0 +1,502 @@
+<header class="shadow-sm bg-white general-header">
+	<div class="d-flex flex-column flex-md-row align-items-md-center container header-container">
+		<a routerLink="/" class="logotipo mr-md-5">
+			<div class="arealogo">
+				<img src="assets/images/logotipo.png" />
+			</div>
+		</a>
+
+		<div class="ml-md-3 area-search d-flex visible-desktop" [style.visibility]="HideSearch ? 'hidden' : 'visible'">
+			<form name="frmSearchHeader" id="search-header-area" class="d-flex bd-highlight">
+				<button (click)="search()">
+					<i class="icon ion-md-search"></i>
+				</button>
+				<input type="search" class="w-100 input-search mr-md-auto" placeholder="Enter car brand or location (e.g. &quot;Ferrari&quot; or &quot;New York&quot; or &quot;10017&quot;)"
+				 aria-label="Search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="off" #search name="searchHeader"
+				 [(ngModel)]="searchData.input" (ngModelChange)="querySearch($event)" />
+				<input type="hidden" name="latitude" value="" data-header-latitude />
+				<input type="hidden" name="longitude" value="" data-header-longitude />
+				<ng-container *ngIf="showSearchGroup && (searchData.places.length > 0 || searchData.brands.length > 0)">
+					<div class="search-group-box">
+						<ul *ngIf="searchData.places.length > 0">
+							<h4>Location</h4>
+							<li *ngFor="let item of searchData.places" (click)="selectPlace(item)">
+								<i class="icon ion-ios-pin"></i> {{item}}</li>
+						</ul>
+						<ul *ngIf="searchData.brands.length > 0">
+							<h4>Car Brand</h4>
+							<ng-container *ngFor="let item of searchData.brands; let i = index">
+								<li (click)="selectBrand(item)">{{item}}</li>
+							</ng-container>
+						</ul>
+					</div>
+				</ng-container>
+			</form>
+		</div>
+
+		<!-- LOGGED -->
+		<!-- menu mobile marcação -->
+
+		<div class="visible-mobile" *ngIf="logged">
+			<div class="menu menu-mobile d-flex justify-content-end">
+				<a class="notification-dropdown" ngbDropdown>
+					<span id="dropdownnotification" ngbDropdownToggle>Notification</span>
+					<div ngbDropdownMenu aria-labelledby="dropdownnotification" class="nt-area">
+						<h4>Notifications</h4>
+						<h5>Alerts (3)</h5>
+						<div class="nt-alerts-list">
+							<a class="d-flex">
+								<img class="m-2 ml-3" src="assets/images/user-photo-50x50.jpg" alt="">
+								<div class="text-notification p-2">
+									<p class="nt-txt">
+										The
+										<strong>1966 Shelby 427 Cobra</strong> auction ended.
+									</p>
+									<span class="nt-hour ">3 hours ago</span>
+								</div>
+							</a>
+						</div>
+						<h5>Listings (3)</h5>
+						<div class="nt-listings-list">
+							<a class="d-flex">
+								<img class="m-2 ml-3" src="assets/images/user-photo-50x50.jpg" alt="">
+								<div class="text-notification p-2">
+									<p class="nt-txt">
+										The
+										<strong>1966 Shelby 427 Cobra</strong> auction ended.
+									</p>
+									<span class="nt-hour ">3 hours ago</span>
+								</div>
+							</a>
+						</div>
+					</div>
+				</a>
+				<img src="assets/images/menu-mobile.png" class="img-fluid menu-mobile-button" (click)="menuTrigger = !menuTrigger" />
+			</div>
+		</div>
+
+
+		<nav class="menu ml-md-auto menu-mobile-area menu-mobile-logged" *ngIf="logged " [ngClass]="{show: menuTrigger}">
+			<a routerLink="/new-car/your-listing" class="">Add listing</a>
+
+			<a class="notification-dropdown" ngbDropdown>
+				<span id="dropdownnotification" ngbDropdownToggle (click)="saveLastNotification()">Notification
+					<i class="icon ion-md-notifications" *ngIf="newNotification"></i>
+				</span>
+				<div ngbDropdownMenu aria-labelledby="dropdownnotification" class="nt-area">
+					<h4>Notifications</h4>
+					<ng-container *ngIf="userNotifications != undefined && userNotifications.length > 0">
+						<h5>Alerts ({{userNotifications.length}})</h5>
+						<div class="nt-alerts-list">
+							<a class="d-flex" *ngFor="let item of userNotifications; let i = index">
+								<!-- <img class="m-2 ml-3" src="assets/images/user-photo-50x50.jpg" alt=""> -->
+								<ng-container *ngIf="item.from != null">
+									<div class="text-notification p-2" *ngIf="item.verb == 'new bid'">
+										<p class="nt-txt">
+											<a routerLink="/bid-detail/{{item.from.id}}">There's a new bid on
+												<strong>{{item.from.year}} {{item.from.model}}</strong>.</a>
+										</p>
+										<span class="nt-hour ">{{item?.timestamp?._seconds | amFromUnix | amTimeAgo}}</span>
+									</div>
+									<div class="text-notification p-2" *ngIf="item.verb == 'ending'">
+										<p class="nt-txt">
+											<a routerLink="/bid-detail/{{item.from.id}}">The auction for
+												<strong>{{item.from.year}} {{item.from.model}}</strong> is ending.</a>
+										</p>
+										<span class="nt-hour ">{{item?.timestamp?._seconds | amFromUnix | amTimeAgo}}</span>
+									</div>
+									<div class="text-notification p-2" *ngIf="item.verb == 'ended'">
+										<p class="nt-txt">
+											<a routerLink="/bid-detail/{{item.from.id}}">The auction for
+												<strong>{{item.from.year}} {{item.from.model}}</strong> is finished.</a>
+										</p>
+										<span class="nt-hour ">{{item?.timestamp?._seconds | amFromUnix | amTimeAgo}}</span>
+									</div>
+								</ng-container>
+							</a>
+						</div>
+					</ng-container>
+					<!-- 					<h5>Listings (3)</h5>
+					<div class="nt-listings-list">
+						<a class="d-flex">
+							<img class="m-2 ml-3" src="assets/images/user-photo-50x50.jpg" alt="">
+							<div class="text-notification p-2">
+								<p class="nt-txt">
+									The <strong>1966 Shelby 427 Cobra</strong> auction ended.
+								</p>
+								<span class="nt-hour ">3 hours ago</span>
+							</div>
+						</a>
+					</div> -->
+				</div>
+			</a>
+
+			<a href="#" class="">Help</a>
+			<div class="pl-0 header-userLogged d-flex d-md-inline-block align-items-center" *ngIf="user">
+				<a routerLink="/user-profile">
+					<img [src]="getUserImage(user.image)" class="header-avatar" />
+					<span class="mobile">{{user.name}}</span>
+				</a>
+
+				<img src="assets/images/menu-mobile.png" class="menu-mobile-inner-button" (click)="menuTrigger = !menuTrigger" />
+			</div>
+			<a (click)="logout()" class="">Logout</a>
+		</nav>
+
+		<div id="overlay-bg" [hidden]="!logged && !menuTrigger" (click)="menuTrigger = !menuTrigger" [ngClass]="{showBg: menuTrigger}">
+		</div>
+		<!-- LOGGED -->
+
+
+		<!-- NOT LOGGED -->
+		<!-- menu mobile marcação -->
+		<div class="visible-mobile" *ngIf="!logged">
+			<div class="menu menu-mobile d-flex justify-content-end" (click)="menuTrigger = !menuTrigger">
+				<img src="assets/images/menu-mobile.png" class="img-fluid menu-mobile-button" />
+			</div>
+		</div>
+
+		<nav class="menu ml-md-auto menu-mobile-area" *ngIf="!logged" [ngClass]="{show: menuTrigger}">
+			<a href="#" class="">Help</a>
+
+			<a href="#" (click)="openModal(modalLogin, { size: 'lg' })" class="">Login</a>
+			<a href="#" (click)="openModal(modalSignUp)" class="">Sign-up</a>
+		</nav>
+		<!-- NOT LOGGED -->
+
+	</div>
+</header>
+
+<!-- MODAL -->
+<!-- Signup -->
+<ng-template #modalSignUp let-modal>
+	<div id="modalSignUp">
+		<div class="modal-header">
+			<h5 class="modal-title" id="modalSignUpLabel">Signup</h5>
+			<button type="button" class="close" (click)="modal.dismiss()" aria-label="Close">
+				<i class="icon ion-md-close"></i>
+			</button>
+		</div>
+		<form class="modal-body" (ngSubmit)="register()" [formGroup]="registerForm" novalidate>
+			<label>Name
+				<span class="form-mandatory">*</span>
+			</label>
+			<div class="inner-icon-input">
+				<div class="form-icon">
+					<img src="assets/images/ion-ios-person-outline.png" alt="" />
+				</div>
+				<input type="text" class="form-control" placeholder="John Doe" formControlName="name" />
+				<small [hidden]="registerForm.controls.name.valid || registerForm.controls.name.untouched" class="text-danger" translate>
+					Name is required
+				</small>
+			</div>
+
+			<label>Phone
+				<span class="form-mandatory">*</span>
+			</label>
+			<div class="inner-icon-input">
+				<div class="form-icon">
+					<img src="assets/images/ion-ios-telephone-outline.png" alt="" />
+				</div>
+				<input type="text" class="form-control" placeholder="(123) 456-789" mask="(000) 000-0000" formControlName="phone" />
+				<small [hidden]="registerForm.controls.phone.valid || registerForm.controls.phone.untouched" class="text-danger" translate>
+					Phone is required
+				</small>
+			</div>
+
+			<label>Email address
+				<span class="form-mandatory">*</span>
+			</label>
+			<div class="inner-icon-input">
+				<div class="form-icon">
+					<img src="assets/images/ion-ios-email-outline.png" alt="" />
+				</div>
+				<input type="email" class="form-control" [placeholder]="'E-Mail' | translate" formControlName="email" autocomplete="email"
+				 required />
+				<small [hidden]="registerForm.controls.email.valid || registerForm.controls.email.untouched" class="text-danger" translate>
+					E-mail is required
+				</small>
+			</div>
+
+			<label>Password
+				<span class="form-mandatory">*</span>
+			</label>
+			<div class="inner-icon-input">
+				<div class="form-icon">
+					<img src="assets/images/ion-ios-locked-outline.png" alt="" />
+				</div>
+				<input type="password" class="form-control" [placeholder]="'At least 6 characters' | translate" formControlName="password"
+				 autocomplete="current-password" required />
+				<small [hidden]="registerForm.controls.password.valid || registerForm.controls.password.untouched" class="text-danger" translate>
+					Password is required
+				</small>
+			</div>
+
+			<label>Confirm Password
+				<span class="form-mandatory">*</span>
+			</label>
+			<div class="inner-icon-input">
+				<div class="form-icon">
+					<img src="assets/images/ion-ios-locked-outline.png" alt="" />
+				</div>
+				<input type="password" class="form-control" [placeholder]="'At least 6 characters' | translate" formControlName="password_confirm"
+				 autocomplete="off" required />
+				<small [hidden]="registerForm.controls.password_confirm.valid || registerForm.controls.password_confirm.untouched" class="text-danger"
+				 translate>
+					Password confirm is required
+				</small>
+			</div>
+			<!--
+				<p class="checkbox">
+					<input type="checkbox" aria-label="Checkbox for following text input" />Lorem ipsum dolor sit amet, consectetur
+					adipisicing elit.
+				</p>
+			-->
+
+			<div class="alert alert-danger" *ngIf="registerForm.hasError('mismatchedPasswords') && !registerForm.controls.password.untouched && !registerForm.controls.password_confirm.untouched"
+			 translate>
+				Passwords do not match
+			</div>
+
+			<div class="alert alert-danger" *ngIf="errorLogin != null" translate>
+				{{errorLogin.message}}
+			</div>
+
+			<button class="modal-action-button modal-btn" type="submit" [disabled]="registerForm.invalid || isLoading || registerForm.hasError('mismatchedPasswords')">
+				<i class="fas fa-cog fa-spin" [hidden]="!isLoading"></i>
+				<span>Get Started</span>
+			</button>
+		</form>
+		<div class="modal-footer justify-content-center">
+			<div class="modal-footer-content">
+				<p>
+					Already have an account?
+					<a href="#" (click)="modal.dismiss(); openModal(modalLogin, { size: 'lg' })">Login</a>
+				</p>
+			</div>
+		</div>
+	</div>
+</ng-template>
+
+<!-- reset pass -->
+<ng-template #modalResetPwd let-modal>
+	<div id="modalResetPwd">
+		<div class="modal-header pb-0">
+			<h5 class="modal-title mt-5" id="modalResetPwdLabel">Reset Password</h5>
+			<button type="button" class="close" (click)="modal.dismiss()" aria-label="Close">
+				<i class="icon ion-md-close"></i>
+			</button>
+		</div>
+		<div class="modal-body pt-0">
+			<p class="modal-subtitle">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis, autem!</p>
+			<form #frmReset (ngSubmit)="recoverPassword()" [formGroup]="frmResetGroup">
+				<label>Email address
+					<span class="form-mandatory">*</span>
+				</label>
+				<div class="inner-icon-input">
+					<div class="form-icon">
+						<img src="assets/images/ion-ios-email-outline.png" alt="" />
+					</div>
+					<input type="email" class="form-control" [(ngModel)]="passwordRecover.email" placeholder="example@domain.com" formControlName="email"
+					/>
+				</div>
+
+				<button class="modal-action-button modal-btn" type="submit" [disabled]="!frmResetGroup.valid">Send Reset Link</button>
+				<blockquote *ngIf="showResetLinkMsg" class="resetPasswordBox">A verification link has been sent to your email. Please check your inbox!</blockquote>
+				<p class="alert alert-danger mt-2" *ngIf="passwordRecover.error">{{passwordRecover.error}}</p>
+			</form>
+		</div>
+		<div class="modal-footer justify-content-center">
+			<div class="modal-footer-content mb-4">
+				<p>Back to
+					<a href="#" (click)="modal.dismiss(); openModal(modalLogin, { size: 'lg' })">Login</a>
+				</p>
+			</div>
+		</div>
+	</div>
+</ng-template>
+
+<!-- Login -->
+<ng-template #modalLogin let-modal>
+	<div id="modalLogin">
+		<div class="row">
+			<div class="col-sm-12 col-md-6">
+				<div class="modal-header">
+					<h5 class="modal-title mt-5" id="modalLoginLabel">Login</h5>
+				</div>
+				<form (ngSubmit)="login()" [formGroup]="loginForm" novalidate class="modal-body">
+					<label>Email address
+						<span class="form-mandatory">*</span>
+					</label>
+					<small [hidden]="loginForm.controls.email.valid || loginForm.controls.email.untouched" class="text-danger" translate>
+						Email is required
+					</small>
+					<div class="inner-icon-input">
+						<div class="form-icon">
+							<img src="assets/images/ion-ios-email-outline.png" alt="" />
+						</div>
+						<input type="text" class="form-control" [placeholder]="'E-mail' | translate" formControlName="email" autocomplete="email"
+						/>
+					</div>
+
+					<label>Password
+						<span class="form-mandatory">*</span>
+					</label>
+					<small [hidden]="loginForm.controls.password.valid || loginForm.controls.password.untouched" class="text-danger" translate>
+						Password is required
+					</small>
+					<div class="inner-icon-input">
+						<div class="form-icon">
+							<img src="assets/images/ion-ios-locked-outline.png" alt="" />
+						</div>
+						<input type="password" class="form-control" placeholder="At least 6 characters" formControlName="password" [placeholder]="'Password' | translate"
+						 required autocomplete="current-password" />
+					</div>
+
+					<div class="login-helpers">
+						<div class="row">
+							<div class="col">
+								<p class="checkbox">
+									<input type="checkbox" aria-label="Checkbox for following text input" />Remember me
+								</p>
+							</div>
+							<div class="col">
+								<a href="#" (click)="modal.dismiss(); openModal(modalResetPwd)" class="d-flex justify-content-end">Forgot password?</a>
+							</div>
+						</div>
+					</div>
+
+					<button class="modal-action-button modal-btn mt-4" type="submit" [disabled]="loginForm.invalid || isLoading">
+						<i class="fas fa-cog fa-spin" [hidden]="!isLoading"></i>
+						<span>Login</span>
+					</button>
+
+					<div class="alert alert-danger" [hidden]="!errorLogin || isLoading" translate>
+						E-mail or password incorrect.
+					</div>
+				</form>
+				<div class="modal-footer justify-content-center">
+					<div class="modal-footer-content">
+						<p>
+							Not a registered user?
+							<a href="#" (click)="modal.dismiss(); openModal(modalSignUp)">Sign-up</a>
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-6 pl-0 border-left d-md-block d-none">
+				<div class="login-image-modal">
+					<div class="modal-header p-0">
+						<button type="button" class="close close-bg" (click)="modal.dismiss()" aria-label="Close">
+							<i class="icon ion-md-close"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</ng-template>
+
+<!-- complete -->
+<ng-template #modalCompleteRegistration let-modal>
+	<div id="modalCompleteRegistration">
+		<div class="modal-header">
+			<h5 class="modal-title" id="modalCompleteRegistrationLabel">Complete your registration</h5>
+			<button type="button" class="close" (click)="modal.dismiss()" aria-label="Close">
+				<i class="icon ion-md-close"></i>
+			</button>
+		</div>
+		<div class="modal-body">
+			<label>Full name
+				<span class="form-mandatory">*</span>
+			</label>
+			<div class="inner-icon-input">
+				<div class="form-icon">
+					<img src="assets/images/ion-ios-person-outline.png" alt="" />
+				</div>
+				<input type="text" class="form-control" placeholder="John Doe" />
+			</div>
+
+			<label>Phone
+				<span class="form-mandatory">*</span>
+			</label>
+			<div class="inner-icon-input">
+				<div class="form-icon">
+					<img src="assets/images/ion-ios-telephone-outline.png" alt="" />
+				</div>
+				<input type="text" class="form-control" placeholder="(123) 456-789" />
+			</div>
+
+			<button class="modal-action-button modal-btn" (click)="modal.dismiss(); openModal(modalCreditCard)">
+				Complete
+			</button>
+		</div>
+		<div class="modal-footer justify-content-center">
+			<div class="modal-footer-content">
+				<p>I do not want to complete the registration.
+					<a href="#">Cancel</a>
+				</p>
+			</div>
+		</div>
+	</div>
+</ng-template>
+
+<!-- Modal Credit Card -->
+<ng-template #modalCreditCard let-modal class="modal-lg">
+	<div id="modalCreditCard">
+		<div class="modal-content">
+			<div class="row">
+				<div class="col">
+					<div class="credit-card-block">
+						<img class="" src="assets/images/credit-card-modal.png" alt="" />
+					</div>
+					<div class="credit-card-content">
+						<h6>Credit Card</h6>
+						<p>Some features can be achieved only with credit card information</p>
+						<ul>
+							<li>Place bids</li>
+							<li>Request for inspection</li>
+							<li>Comment on an auction</li>
+							<li>Lorem Ipsum</li>
+						</ul>
+					</div>
+				</div>
+				<div class="col border-left">
+					<div class="modal-header">
+						<h5 class="modal-title" id="modalCreditCardLabel">Credit Card Information</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">x</button>
+					</div>
+					<div class="modal-body">
+						<label>Name on Card</label>
+						<input type="text" class="form-control" placeholder="John Doe" />
+
+						<label for="card-number">Card Number</label>
+						<div id="card-number" class="form-control input empty"></div>
+
+						<div class="row">
+							<div class="col">
+								<label for="card-expiry">Valid Through</label>
+								<div id="card-expiry" class="form-control input empty"></div>
+							</div>
+							<div class="col">
+								<label for="card-cvc">CVV</label>
+								<div id="card-cvc" class="form-control input empty"></div>
+							</div>
+						</div>
+
+						<div id="card-errors" role="alert"></div>
+
+						<button class="modal-action-button modal-btn mt-5" (click)="registerCard()">
+							<i class="fas fa-cog fa-spin" [hidden]="!isLoading"></i>
+							Register Credit Card</button>
+					</div>
+					<div class="modal-footer justify-content-center">
+						<div class="modal-footer-content" (click)="modal.dismiss()" style="cursor: pointer;">
+							<p>Register Credit Card Later</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</ng-template>

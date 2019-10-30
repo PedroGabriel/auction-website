@@ -1,0 +1,59 @@
+<div class="page-faq">
+  <ng-container *ngIf="allowEdit">
+    <button class="btnEdit" (click)="editPage = !editPage" *ngIf="!editPage">Edit this page</button>
+    <button class="btnNewFaq" (click)="addFaq()" *ngIf="editPage">New Faq</button>
+    <button class="btnConfirm" (click)="editPageData()" *ngIf="editPage">Save</button>
+  </ng-container>
+  <div class="container">
+    <h1>Questions?</h1>
+
+   <ng-container *ngIf="!editPage">
+    <p class="faq-txt" [innerHTML]="page.text"></p>
+  </ng-container>
+    <ng-container *ngIf="editPage">
+     <input type="text" name="pageTitle" [(ngModel)]="page.text" class="form-control" />
+   </ng-container>
+<ng-container  *ngFor="let faq of page.faqs; let i = index">
+  <ng-container *ngIf="editPage">
+      <div
+        class="item-faq show"
+        [attr.aria-expanded]="true"
+      >
+        <h3 class="pt-4 pb-4">
+          <span class="faq-button-icon">
+            <button class="btnRemove" (click)="removeFaq(i)"><i class="icon ion-md-trash"></i></button>
+          </span>
+          <input type="text" name="faq{{i}}Title" [(ngModel)]="faq.title" class="form-control">
+        </h3>
+        <div class="item-faq-txt" id="collapsefirst" [ngbCollapse]="false">
+          <textarea name="faq{{i}}Text" [(ngModel)]="faq.text" class="form-control"></textarea>
+        </div>
+      </div>
+  </ng-container>
+  <ng-container *ngIf="!editPage">
+    <div
+      class="item-faq"
+      [ngClass]="faq.isCollapsed ? 'show' : 'hide'"
+      (click)="faq.isCollapsed = !faq.isCollapsed"
+      [attr.aria-expanded]="!faq.isCollapsed"
+      aria-controls="collapsefirst"
+    >
+      <h3 class="pt-4 pb-4">
+        <span class="faq-button-icon">
+          <img src="assets/images/faq-icon-collapsed.jpg" class="show-icon" />
+          <img src="assets/images/faq-icon-notcollapsed.jpg" class="hide-icon" />
+        </span>
+        {{faq.title}}
+      </h3>
+      <div class="item-faq-txt collapse" id="collapsefirst" [ngbCollapse]="!faq.isCollapsed">
+        {{faq.text}}
+      </div>
+    </div>
+  </ng-container>
+  </ng-container>
+
+  </div>
+</div>
+
+
+<div class="pink-loading" *ngIf="isLoading"></div>

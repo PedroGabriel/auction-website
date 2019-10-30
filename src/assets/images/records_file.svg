@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="26" height="31" viewBox="0 0 26 31">
+    <defs>
+        <path id="a" d="M.003 0H26v18.406H.003z"/>
+    </defs>
+    <g fill="none" fill-rule="evenodd">
+        <path fill="#E1E4E1" d="M5.571 0C4.55 0 3.714.872 3.714 1.938v27.125c0 1.065.836 1.937 1.857 1.937h18.572C25.164 31 26 30.128 26 29.062V7.75L18.571 0h-13"/>
+        <path fill="#AAB0B1" d="M20.429 7.75H26L18.571 0v5.813c0 1.065.836 1.937 1.858 1.937"/>
+        <g transform="translate(0 7.75)">
+            <mask id="b" fill="#fff">
+                <use xlink:href="#a"/>
+            </mask>
+            <path fill="#C6CCCE" d="M26 5.813L20.429 0H26v5.813" mask="url(#b)"/>
+            <path fill="#4054B2" d="M22.286 17.438c0 .532-.418.968-.929.968H.93c-.511 0-.929-.436-.929-.968V7.75c0-.533.418-.969.929-.969h20.428c.51 0 .929.436.929.969v9.688" mask="url(#b)"/>
+            <text fill="#FFF" font-family="OpenSans-Bold, Open Sans" font-size="7" font-weight="bold" letter-spacing=".131" mask="url(#b)">
+                <tspan x="4" y="15.25">FILE</tspan>
+            </text>
+        </g>
+        <path fill="#C6CCCE" d="M21.357 26.156H3.714v.969h17.643c.51 0 .929-.436.929-.969v-.968c0 .532-.418.968-.929.968"/>
+    </g>
+</svg>

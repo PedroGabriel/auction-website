@@ -1,0 +1,116 @@
+<div class="page-about">
+	<section class="about-cover">
+		<h1>About</h1>
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+			<polygon fill="#fafbfe" points="0,0 0,100 100,100" />
+		</svg>
+		<div class="cover-mask"></div>
+	</section>
+
+	<ng-container *ngIf="allowEdit">
+		<button class="btnEdit" (click)="editPage = !editPage" *ngIf="!editPage">Edit this page</button>
+		<button class="btnConfirm" (click)="editPageData()" *ngIf="editPage">Save</button>
+	</ng-container>
+	<ng-container *ngIf="!isLoading">
+		<section class="pt-5">
+			<div class="about-container p-md-0">
+				<ng-container *ngIf="!editPage">
+					<span> {{page.about.subTitle}}</span>
+					<h2 [innerHTML]="page.about.title"></h2>
+					<p [innerHTML]="page.about.content"></p>
+				</ng-container>
+				<ng-container *ngIf="editPage">
+					<input type="text" name="aboutSubTitle" [(ngModel)]="page.about.subTitle" class="form-control" />
+					<input type="text" name="aboutTitle" [(ngModel)]="page.about.title" class="form-control" />
+					<textarea name="aboutContent" [(ngModel)]="page.about.content" class="form-control"></textarea>
+				</ng-container>
+			</div>
+		</section>
+
+		<section class="pt-5 cards-area">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-12 col-md-4" *ngFor="let item of page.cards; let i = index">
+						<ng-container *ngIf="!editPage">
+							<div class="about-card">
+								<h3>{{item.title}}</h3>
+								<p [innerHTML]="item.content"></p>
+							</div>
+						</ng-container>
+						<ng-container *ngIf="editPage">
+							<div class="about-card">
+								<input type="text" name="card{{i}}title" [(ngModel)]="item.title" class="form-control" />
+								<textarea name="card{{i}}content" [(ngModel)]="item.content" class="form-control"></textarea>
+							</div>
+						</ng-container>
+					</div>
+				</div>
+			</div>
+		</section>
+
+
+		<section class="section-gray">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+				<polygon fill="#fafbfe" points="0,0 100,0 100,100" />
+			</svg>
+			<div class="about-container p-md-0">
+				<ng-container *ngIf="!editPage">
+					<span>{{page.aboutMiddle.subTitle}}</span>
+					<h2 [innerHTML]="page.aboutMiddle.title"></h2>
+					<p [innerHTML]="page.aboutMiddle.content"></p>
+				</ng-container>
+				<ng-container *ngIf="editPage">
+					<input type="text" name="aboutMiddleSubtitle" [(ngModel)]="page.aboutMiddle.subTitle" class="form-control" />
+					<input type="text" name="aboutMiddletitle" [(ngModel)]="page.aboutMiddle.title" class="form-control" />
+					<textarea name="aboutMiddlecontent" [(ngModel)]="page.aboutMiddle.content" class="form-control"></textarea>
+				</ng-container>
+			</div>
+		</section>
+
+
+		<section class="list-about">
+			<div class="container p-md-0">
+				<div class="row" *ngFor="let item of page.aboutList; let i = index">
+					<ng-container *ngIf='i % 2 == 0'>
+						<div class="col-sm-12 col-md-6">
+							<div class="container-listabout">
+								<ng-container *ngIf="!editPage">
+									<h3>{{item.title}}</h3>
+									<p [innerHTML]="item.content"></p>
+								</ng-container>
+
+								<ng-container *ngIf="editPage">
+									<input type="text" name="listabout{{i}}title" [(ngModel)]="item.title" class="form-control" />
+									<textarea name="listabout{{i}}content" [(ngModel)]="item.content" class="form-control"></textarea>
+								</ng-container>
+							</div>
+						</div>
+						<div class="col-sm-12 col-md-6 list-about-img">
+							<img [src]="item.image" alt="">
+						</div>
+					</ng-container>
+					<ng-container *ngIf='i % 2 != 0'>
+						<div class="col-md-6 list-about-img">
+							<img [src]="item.image" alt="">
+						</div>
+						<div class="col-sm-12 col-md-6">
+							<div class="container-listabout">
+								<ng-container *ngIf="!editPage">
+									<h3>{{item.title}}</h3>
+									<p [innerHTML]="item.content"></p>
+								</ng-container>
+
+								<ng-container *ngIf="editPage">
+									<input type="text" name="listabout{{i}}title" [(ngModel)]="item.title" class="form-control" />
+									<textarea name="listabout{{i}}content" [(ngModel)]="item.content" class="form-control"></textarea>
+								</ng-container>
+							</div>
+						</div>
+					</ng-container>
+				</div>
+			</div>
+		</section>
+	</ng-container>
+</div>
+
+<div class="pink-loading" *ngIf="isLoading"></div>

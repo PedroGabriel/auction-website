@@ -1,0 +1,52 @@
+<section class="pt-5">
+  <div class="container">
+    <div class="header-section">
+      <div class="admin-page-title">
+        <h1>Manage Listings</h1>
+        <p *ngIf="!isLoading">{{ listings.length }} Pendents listings</p>
+      </div>
+    </div>
+
+    <div class="manage-listings-cars d-flex flex-wrap">
+      <!-- Car -->
+      <ng-container *ngFor="let car of listings?.slice().reverse()">
+        <a (click)="clickListing(car.id)" class="manage-list-car-item d-md-flex" *ngIf="car.model != null">
+          <div class="list-car-slides">
+            <!-- carousel -->
+            <div class="box-car-photo" *ngIf="car && (car.cover || car.approval)">
+              <img [src]="makeTrustedImage(car, car.cover)" alt="" />
+            </div>
+          </div>
+          <div class="list-car-content p-4">
+            <div class="list-car-data">
+              <h3>{{ car.year }} {{ car.brand }} {{ car.model }}
+                <img class="inspection-badge" src="assets/images/badge.svg" alt="Inspection approved" *ngIf="car.verified">
+                <img class="inspection-badge" src="assets/images/inspection-check.svg" alt="Inspection approved" *ngIf="car.inspection && !car.verified">
+              </h3>
+              <span class="manage-car-state" *ngIf="car.address && car.address.name && car.address.state && car.address.zipcode">
+                {{car.address.name}}, {{car.address.state}} - {{car.address.zipcode}}
+              </span>
+
+              <small>{{car.timestamp.seconds | date}}</small>
+              <p class="manage-car-waitingapproval">
+                {{ registerStepsLabel[registerSteps.indexOf(car.registerStep)] == 'Complete' ? 'Ready to be published' : registerStepsLabel[registerSteps.indexOf(car.registerStep)]
+                }}
+              </p>
+              <div class="manage-car-pregressbar d-flex">
+                <div class="manage-progressbar flex-fill mr-2" [class.aproved]="car.state == 'approved' || registerStep(car) >= 0"></div>
+                <div class="manage-progressbar flex-fill mr-2" [class.aproved]="car.state == 'approved' || registerStep(car) >= 1"></div>
+                <div class="manage-progressbar flex-fill mr-2" [class.aproved]="car.state == 'approved' || registerStep(car) >= 2"></div>
+                <div class="manage-progressbar flex-fill mr-2" [class.aproved]="car.state == 'approved' || registerStep(car) >= 4"></div>
+                <div class="manage-progressbar flex-fill mr-2" [class.aproved]="car.state == 'approved' || registerStep(car) >= 5"></div>
+                <div class="manage-progressbar flex-fill mr-2" [class.aproved]="car.state == 'approved' || registerStep(car) >= 6"></div>
+                <div class="manage-progressbar flex-fill mr-2" [class.aproved]="car.state == 'approved' || registerStep(car) >= 7"></div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </ng-container>
+    </div>
+
+    <br />
+  </div>
+</section>

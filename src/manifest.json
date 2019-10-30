@@ -1,0 +1,14 @@
+{
+  "name": "Auction App",
+  "short_name": "Auction App",
+  "theme_color": "#f05b7a",
+  "background_color": "#f05b7a",
+  "scope": "/",
+  "start_url": "/",
+  "display": "standalone",
+  "icons": [{
+    "src": "assets/angular-logo.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }]
+}

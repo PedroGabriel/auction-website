@@ -1,0 +1,59 @@
+<!-- Modal Credit Card -->
+<ng-template #modalCreditCard let-modal class="modal-lg">
+    <div id="modalCreditCard">
+      <div class="modal-content">
+        <div class="row">
+          <div class="col">
+            <div class="credit-card-block">
+              <img class="" src="assets/images/credit-card-modal.png" alt="" />
+            </div>
+            <div class="credit-card-content">
+              <h6>Credit Card</h6>
+              <p>Some features can be achieved only with credit card information</p>
+              <ul>
+                <li>Place bids</li>
+                <li>Request for inspection</li>
+                <li>Comment on an auction</li>
+                <li>Lorem Ipsum</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col border-left">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalCreditCardLabel">Credit Card Information</h5>
+              <button type="button" class="close" data-dismiss="modal" (click)="modal.dismiss()" aria-label="Close">x</button>
+            </div>
+            <div class="modal-body">
+              <label>Name on Card</label>
+              <input type="text" #ownerName class="form-control" placeholder="John Doe" [(ngModel)]="owner.name" />
+  
+              <label for="card-number">Card Number</label>
+              <div id="card-number" class="form-control input empty"></div>
+  
+              <div class="row">
+                <div class="col">
+                  <label for="card-expiry">Valid Through</label>
+                  <div id="card-expiry" class="form-control input empty"></div>
+                </div>
+                <div class="col">
+                  <label for="card-cvc">CVV</label>
+                  <div id="card-cvc" class="form-control input empty"></div>
+                </div>
+              </div>
+  
+              <div id="card-errors" role="alert"></div>
+  
+              <button class="modal-action-button modal-btn mt-5" (click)="registerCard()">
+                <i class="fas fa-cog fa-spin" [hidden]="!isLoading"></i>
+                Register Credit Card</button>
+            </div>
+            <div class="modal-footer justify-content-center">
+              <div class="modal-footer-content">
+                <a (click)="modal.dismiss()" routerLink="/user-payment">Credit Card Information</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>

@@ -1,0 +1,269 @@
+
+/*ADMIN*/
+/*Elements*/
+	.admin-page-title h1 {
+		font-weight: bold;
+	}
+
+	.admin-page-title p {
+		color: #666;
+	}
+
+
+	.admin-user-url	{
+		display: block;
+		border-radius: 5px;
+		background-color: #ffffff;
+		box-shadow: 0 0 10px 0 rgba(171, 180, 189, 0.3);
+		border: solid 1px rgba(171, 180, 189, 0.3);
+		margin-bottom: 25px;
+		transition: 0.3s all ease;
+	}
+	.admin-user-url:hover{
+		transition: 0.3s all ease;
+		box-shadow: 0 0 20px 0 rgba(171, 180, 189, 0.4);
+	}
+
+	
+
+
+
+/*Elements*/
+	.admin-page-title h1 {
+		font-weight: bold;
+	}
+
+	.admin-page-title p {
+		color: #666;
+	}
+
+	.btn-admin-white  {
+		opacity: 1;
+		padding: 8px 22px;
+		border-radius: 4px;
+		background-color: #fff;
+		 box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1);
+		font-size: 16px;
+		font-weight: normal;
+		color: #000;
+		border: none;
+	}
+	.btn-admin-pink  {
+		width: auto;
+		opacity: 1;
+		padding: 8px 22px;
+		border-radius: 4px;
+		background-color: #f05b7a;
+		font-size: 16px;
+		font-weight: normal;
+		color: #ffffff;
+		border: none;
+	}
+
+/*Users*/
+	.users-list-item {
+		text-align: center;
+		padding: 30px;
+	}
+
+	.users-list-item img {
+		display: inline-block;
+		margin-bottom: 20px;
+	}
+
+	.users-list a.admin-user-url p{
+		padding: 0;
+		margin: 0;  
+	}
+	.users-list a.admin-user-url{
+		color: #404040;
+		font-size: 18px;
+		letter-spacing: 0.5px;
+		text-align: center;
+	}
+	.users-list a.admin-user-url{
+		text-decoration: none !important;
+	}
+	.users-list a.admin-user-url .user-name {
+		font-size: 20px;
+		margin-bottom: 0;
+	}
+
+	.users-list a.admin-user-url .user-email{
+		font-size: 14px;
+		color: #a7abb0;
+	}
+
+/*User Detail*/
+	.admin-area{
+  		border-radius: 5px;
+  		background-color: #ffffff;
+  		box-shadow: 0 0 10px 0 rgba(171, 180, 189, 0.3);
+  		border: solid 1px rgba(171, 180, 189, 0.3);
+	}
+
+	.user-detail-buttons button{
+		float: left;
+		margin-left: 20px;
+	} 
+
+	.admin-title-user{
+		font-size: 13px;
+		font-weight: 600;
+		font-style: normal;
+		font-stretch: normal;
+		line-height: 1.85;
+		letter-spacing: 0.4px;
+		color: #000000;
+		margin:0px 0 0 0;
+		padding:0;
+	}
+	.admin-date-user{
+		font-size: 10px;
+		color: rgba(0, 0, 0, 0.5);
+	}
+
+	/*admin-profile*/
+	.admin-profile-box .profile-info h3{
+		font-size: 18px;
+		font-weight: bold;
+		letter-spacing: 0.8px;
+		text-align: center;
+		color: #404040;
+		margin-top: 19px;
+		margin-bottom: 14px;
+	}
+	
+	.admin-profile-box .profile-info .star-rating{
+		max-width: 150px;
+	}
+	.admin-profile-box .profile-info{
+		text-align:center;
+	}
+	.admin-profile-box .profile-about{
+		padding: 30px;
+	}
+	.admin-profile-box .profile-about p{
+		font-size: 14px;
+		line-height: 2;
+		letter-spacing: 0.3px;
+		color: #404040;
+	}
+	.admin-profile-box{
+		width: 100%;
+	}
+
+
+/*User Edit Page*/
+	.user-edit-title {
+		padding: 25px 30px;
+		background: #f8f8ff;
+	}
+
+	.user-edit-title h1 {
+		font-size: 26px;
+		font-weight: bold;
+		margin: 0;
+	}
+
+	.user-edit-content a {
+		color: #f05b7a;
+		font-weight: bold;
+	}
+
+	.user-edit-content {
+		padding: 0 30px 15px 30px;
+	}
+
+	.user-edit-content span.bold {
+		font-weight: bold;
+	}
+
+	.user-edit-row {
+		padding: 25px 0;
+		border-bottom: solid #999 1px;
+	}
+	
+	.user-edit-row:last-child {
+		border-bottom: 0;
+	}
+
+
+
+.admin-header{
+		background-color: #f05b7a;
+	}
+.admin-header a{color:#ffffff;}
+.admin-header .current{
+	font-weight: 900;
+}
+
+.admin-area .nav-admin-user{
+	width: 100%;
+	background-color: #f9f9ff;
+	padding: 20px 0 0;
+}
+.admin-area .nav-admin-user li{
+	width: 25%;
+	text-align: center;
+	padding: 0;
+	margin:0;  
+}
+
+.admin-area .nav-admin-user a{
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  color: #404040;
+}
+.admin-area .nav-admin-user a.active{
+  color: #f05b7a;
+  font-weight: bold;
+  border-bottom: 3px solid #f05b7a;
+  padding-bottom: 17px;
+  display: inline-block;
+}
+#adminuserComments h5{
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  color: #404040;
+}
+
+
+.admin-comments-list{
+	overflow-y: scroll;
+    height: 380px;
+    width: 95%;
+    margin: 0 auto;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+.admin-comments-list p{
+	padding: 0;
+	margin-bottom: 0;
+}
+.admin-comments-list .admin-comented-user{
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: #404040;
+}
+.admin-comments-list .admin-comented-user a{
+  color: #f05b7a;
+}
+.admin-comments-list .comments-list-content{
+  font-size: 12px;
+  line-height: 1.67;
+  color: #404040;
+}
+.admin-comments-list .admin-deletecomment{
+  font-size: 10px;
+  font-weight: 600;
+  color: #797979;
+}
+
+.listings-cars .box-car-item{
+	margin-right: 25px;
+	margin-bottom: 40px;
+}
+  }

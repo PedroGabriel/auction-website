@@ -1,0 +1,35 @@
+{
+  "hosting": {
+    "public": "dist",
+    "ignore": [
+      "**/node_modules/**",
+      "**/libs/**",
+      "**/src/**",
+      "**/e2e/**",
+      "**/reports/**",
+      "**/.git/**",
+      "**/.firebase/**",
+
+      "tslint.json",
+      "tsconfig.json",
+      "proxy.conf",
+      "package-lock.json",
+      "package.json",
+      "ngsw-config.json",
+      "firebase.json",
+      ".firebaserc",
+      "angular.json",
+      ".stylelintrc",
+      ".htmlhintrc",
+      ".gitignore",
+      ".editorconfig"
+    ],
+    "rewrites": [{
+      "source": "**",
+      "destination": "/index.html"
+    }],
+    "predeploy": [
+      "npm run build --env=prod --prod"
+    ]
+  }
+}

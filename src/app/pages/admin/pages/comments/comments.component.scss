@@ -1,0 +1,58 @@
+.comments-count-txt {
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    color: #838385;
+}
+
+.comments-list-user {
+    flex-direction: column;
+}
+
+.comments-area {
+    border-radius: 5px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px 0 rgba(171, 180, 189, 0.3);
+    border: solid 1px rgba(171, 180, 189, 0.3);
+}
+
+.reported-date {
+    font-size: 14px;
+    font-weight: normal;
+    letter-spacing: 0.4px;
+    color: #000000;
+}
+
+.reported-date a {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #f05b7a;
+}
+
+.comment-list-content {
+    font-size: 12px;
+    line-height: 1.71;
+    color: #404040;
+}
+
+.comments-list-item {
+    padding: 30px;
+}
+
+.comment-title-user {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    color: #404040;
+}
+.modal-content {
+    width: 330px !important;
+}
+
+.modal-title {
+    font-size: 20px;
+    line-height: 1.8;
+    letter-spacing: 0.3px;
+    text-align: center;
+    color: #404040;
+    text-transform: uppercase;
+}

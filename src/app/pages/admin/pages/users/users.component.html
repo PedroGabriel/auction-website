@@ -1,0 +1,128 @@
+<section class="pt-5">
+  <div class="container">
+    <div class="header-section d-flex align-items-end">
+      <div class="admin-page-title">
+        <h1>Users</h1>
+        <p>{{ users.length }} Users</p>
+      </div>
+      <button
+        (click)="openModal(modalSignUp)"
+        class="btn-admin-pink ml-md-auto d-flex align-items-center"
+      >
+        + New User
+      </button>
+    </div>
+    <div class="users-list">
+      <div class="row">
+        <div class="col-md-3 admin-list-user" *ngFor="let user of users">
+          <a routerLink="/admin/user-detail/{{user && user.uid ? user.uid : user?.id}}" class="admin-user-url">
+            <div class="users-list-item ">
+              <img src="assets/images/user-photo-50x50.jpg" alt="" *ngIf="!user.image" />
+              <img [src]="getImage(user.image)" class="admin-avatar" *ngIf="user.image" />
+              <p class="user-name">{{ user.name }}</p>
+              <p class="user-email">{{ user.email }}</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Modal Register Signup -->
+<ng-template #modalSignUp let-modal>
+  <div id="modalSignUp">
+    <div class="modal-header">
+      <h5 class="modal-title" id="modalSignUpLabel">New User</h5>
+      <button type="button" class="close" (click)="modal.dismiss()" aria-label="Close">
+        <i class="icon ion-md-close"></i>
+      </button>
+    </div>
+    <form class="modal-body" (ngSubmit)="register()" [formGroup]="registerForm" novalidate>
+      <label>Name <span class="form-mandatory">*</span></label>
+      <div class="inner-icon-input">
+        <div class="form-icon"><img src="assets/images/ion-ios-person-outline.png" alt="" /></div>
+        <input type="text" class="form-control" placeholder="John Doe" formControlName="name" />
+      </div>
+
+      <label>Phone <span class="form-mandatory">*</span></label>
+      <div class="inner-icon-input">
+        <div class="form-icon"><img src="assets/images/ion-ios-telephone-outline.png" alt="" /></div>
+        <input type="text" class="form-control" placeholder="(123) 456-789" formControlName="phone" />
+      </div>
+
+      <label>Email address <span class="form-mandatory">*</span></label>
+      <div class="inner-icon-input">
+        <div class="form-icon"><img src="assets/images/ion-ios-email-outline.png" alt="" /></div>
+        <input
+          type="text"
+          class="form-control"
+          [placeholder]="'E-Mail' | translate"
+          formControlName="email"
+          autocomplete="email"
+          required
+        />
+      </div>
+
+      <label>Password <span class="form-mandatory">*</span></label>
+      <div class="inner-icon-input">
+        <div class="form-icon"><img src="assets/images/ion-ios-locked-outline.png" alt="" /></div>
+        <input
+          type="password"
+          class="form-control"
+          [placeholder]="'At least 6 characters' | translate"
+          formControlName="password"
+          autocomplete="current-password"
+          required
+        />
+      </div>
+
+      <label>Confirm Password <span class="form-mandatory">*</span></label>
+      <div class="inner-icon-input">
+        <div class="form-icon"><img src="assets/images/ion-ios-locked-outline.png" alt="" /></div>
+        <input
+          type="password"
+          class="form-control"
+          [placeholder]="'At least 6 characters' | translate"
+          formControlName="password_confirm"
+          autocomplete="off"
+          required
+        />
+      </div>
+      <!--
+        <p class="checkbox">
+          <input type="checkbox" aria-label="Checkbox for following text input" />Lorem ipsum dolor sit amet, consectetur
+          adipisicing elit.
+        </p>
+      -->
+
+      <button
+        class="modal-action-button modal-btn"
+        type="submit"
+        [disabled]="registerForm.invalid || isLoading || registerForm.hasError('mismatchedPasswords')"
+      >
+        <i class="fas fa-cog fa-spin" [hidden]="!isLoading"></i> <span>Register</span>
+      </button>
+    </form>
+  </div>
+</ng-template>
+
+
+<ng-template #modalSignUpSuccess let-modal>
+  <div id="modalSignUpSuccess">
+
+    <div class="modal-header">
+      <button type="button" class="close" (click)="modal.dismiss()">
+        <i class="icon ion-md-close"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <img src="assets/images/registersucessfully-icon.jpg" alt="" />
+      <h5 class="modal-title" id="modalSignUpSuccessLabel">Registered user successfully</h5>
+
+      <button class="modal-action-button modal-btn" (click)="modal.dismiss()">Close</button>
+    </div>
+
+  </div>
+</ng-template>

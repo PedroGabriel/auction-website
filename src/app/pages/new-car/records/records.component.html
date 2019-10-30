@@ -1,0 +1,126 @@
+<div id="breadcrumb-newcar">
+  <nav>
+    <ol>
+      <li class="waiting-approval">
+        <i class="icon ion-md-time"></i>
+      </li>
+      <li>Payment</li>
+      <li>Review</li>
+      <li class="active">Records</li>
+      <li class="active">
+        <a routerLink="/new-car/gallery/{{listing}}">Gallery</a>
+      </li>
+      <li class="active">
+        <a routerLink="/new-car/additional-information/{{listing}}">Information</a>
+      </li>
+      <li class="waiting-approval active">
+        <i class="icon ion-md-time"></i>
+      </li>
+      <li class="active">
+        <a routerLink="/new-car/basic-information/{{listing}}">Basic</a>
+      </li>
+    </ol>
+  </nav>
+</div>
+
+<section class="pt-5">
+  <div class="container-add-listing">
+    <h1 class="title-listing">Records</h1>
+    <p class="text-inicial-listing pt-3">
+      Um dolor sit amet, consectetur adipiscing elit. Phasellus
+      <br /> dapibus mi id ante ultrices, nec hendrerit
+    </p>
+    <div class="box-area-newcar mt-5">
+      <form name="frmRecords" #frmRecords class="p-5" (ngSubmit)="submit(modalLoading)" novalidate *ngIf="!needInspection">
+        <input type="file" accept="*" #file style="display:none" (change)="uploadFiles(file.files)" multiple>
+
+        <ul class="box-upload-eventos" *ngIf="msgEvento.length > 0">
+          <li *ngFor="let item of msgEvento">
+            <span [innerHTML]="item"></span>
+          </li>
+        </ul>
+
+        <div criaturoDnd class="uploadimages form-row dropzone" (filesChangeEmiter)="onFilesChange($event)" (filesInvalidEmiter)="onFileInvalids($event)"
+          (msgEventoEmiter)="onMsgEvento($event)" [allowed_extensions]="allowed_extensions" *ngIf="fileList.length == 0">
+          <ng-container *ngIf="fileList.length == 0">
+            <img src="assets/images/cloud.svg" class="box-upload-image" />
+            <h2>Drag and drop files here</h2>
+            <small>OR</small>
+          </ng-container>
+
+          <button class="btn-upload-photo" (click)="file.click()" type="button">Select Files</button>
+        </div>
+
+        <ng-container *ngIf="fileList.length > 0">
+          <div class="d-flex justify-content-between align-items-center">
+            <a class="btn-text-upload-photo" (click)="file.click()">
+              <div class="add-file-container mr-2">
+                <img src="assets/images/cloud.svg" />
+              </div>
+              + Add Files
+            </a>
+            <button type="button" (click)="submit(modalLoading)" class="btn-newcar-style float-right" [disabled]="isLoading">
+              <i class="fas fa-cog fa-spin" [hidden]="!isLoading"></i> Next Step
+              <i class="ml-5 float-right icon ion-md-arrow-forward"></i>
+            </button>
+          </div>
+          <hr class="mb-5 mt-5">
+          <ul class="fileList">
+            <li class="d-flex justify-content-between align-items-center" *ngFor="let item of fileList; let i = index">
+              <img src="assets/images/pdf.svg">
+              <p class="flex-fill text-left ml-2">{{item.filename}}</p>
+              <a class="btn-erase" (click)="removeImage(i)">
+                <i class="fas fa-close"></i>
+              </a>
+            </li>
+          </ul>
+        </ng-container>
+      </form>
+
+      <div *ngIf="needInspection" class="p-5">
+        <input type="file" accept="*" #inspectionFile style="display:none" (change)="uploadFiles(inspectionFile.files)">
+
+        <ul class="box-upload-eventos" *ngIf="msgEvento.length > 0">
+          <li *ngFor="let item of msgEvento">
+            <span [innerHTML]="item"></span>
+          </li>
+        </ul>
+
+        <div criaturoDnd class="uploadimages form-row dropzone" (filesChangeEmiter)="onInspectionFilesChange($event)" (filesInvalidEmiter)="onFileInvalids($event)"
+          (msgEventoEmiter)="onMsgEvento($event)" [allowed_extensions]="allowed_extensions">
+          <ng-container>
+            <img src="{{inspFile ? 'assets/images/inspection-green.svg' : 'assets/images/inspection.svg'}}" class="box-upload-image"
+            />
+            <h2 *ngIf="!inspFile">Drag and drop file here</h2>
+            <h2 *ngIf="inspFile">{{inspFile.filename}}</h2>
+            <small *ngIf="!inspFile">OR</small>
+          </ng-container>
+
+          <button class="btn-upload-photo" (click)="inspectionFile.click()" type="button">Select Files</button>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center">
+          <p class="text-left text-inicial-listing pr-2">Um dolor sit amet, consectetur adipiscing elit. Phasellus dapibus mi id ante ultrices, nec hendrerit</p>
+          <button class="btn-upload-photo" (click)="stepToReview()" type="button" *ngIf="listingObject.reservePrice < 100000">Skip
+            <i class="ml-5 float-right icon ion-md-arrow-forward"></i>
+          </button>
+          <button class="btn-upload-photo" (click)="sendInspection()" type="button" *ngIf="inspFile">Next Step
+            <i class="ml-5 float-right icon ion-md-arrow-forward"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<ng-template #modalLoading let-modal>
+  <div id="modalLoading">
+
+    <div class="modal-body">
+      <div class="row">
+        <h3>Processing</h3>
+        <p>Uploading files... Please wait!</p>
+      </div>
+    </div>
+  </div>
+</ng-template>

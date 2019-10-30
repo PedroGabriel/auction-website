@@ -1,0 +1,607 @@
+<div id="breadcrumb-newcar">
+  <nav>
+    <ol>
+      <li class="waiting-approval">
+        <i class="icon ion-md-time"></i>
+      </li>
+      <li class="">Payment</li>
+      <li class="active">Review</li>
+      <li class="active">Records</li>
+      <li class="active">Gallery</li>
+      <li class="active">Information</li>
+      <li class="waiting-approval active">
+        <i class="icon ion-md-time"></i>
+      </li>
+      <li class="active">Basic</li>
+    </ol>
+  </nav>
+</div>
+<section class="pt-5">
+  <div class="container-add-listing">
+    <h1 class="title-listing">Review & Submit</h1>
+    <p class="text-inicial-listing pt-3">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus dapibus mi id ante ultrices, nec hendrerit enim hendrerit.
+    </p>
+
+    <div class="box-area-newcar area-edit-listing area-waitingapproval p-5">
+      <div class="">
+        <div class="edit-listing-title d-flex">
+          <h2>BASIC INFORMATION</h2>
+          <a (click)="confirmEdit('basic')" class="btn-edit-listing flex-fill">{{ editing.basic ? 'Confirm' : 'Edit' }}</a>
+        </div>
+        <form #frmBasic (ngSubmit)="submitBasic()" *ngIf="listingObject != null">
+          <div class="row">
+            <div class="col-3">
+              <p class="listing-label">Year</p>
+              <p class="listing-value" *ngIf="!editing.basic">{{ listingObject.year }}</p>
+              <ng-container *ngIf="editing.basic">
+
+                <select name="year" id="" class="form-control" [(ngModel)]="listingObject.year" required>
+                  <option value="">Select</option>
+                  <option value="{{year}}" *ngFor="let year of range(1900, currentYear)">{{ year }}</option>
+                </select>
+              </ng-container>
+            </div>
+            <div class="col-3">
+              <p class="listing-label">Car branding</p>
+              <p class="listing-value" *ngIf="!editing.basic">{{ listingObject.brand }}</p>
+              <ng-container *ngIf="editing.basic">
+                <select name="brand" id="" class="form-control" [(ngModel)]="listingObject.brand" required>
+                  <option value="">Select</option>
+                  <option value="{{car.key}}" *ngFor="let car of brandsModels">{{ car.key | titlecase }}
+                  </option>
+                </select>
+              </ng-container>
+            </div>
+            <div class="col-3">
+              <p class="listing-label">Car model</p>
+              <p class="listing-value" *ngIf="!editing.basic">{{ listingObject.model }}</p>
+              <ng-container *ngIf="editing.basic">
+                <input class="form-control" type="text" name="model" ngxTypeahead [(ngModel)]="listingObject.model" [value]="listingObject.model"
+                  [taList]="getSelectedModels()" [taItemTpl]="itemTpl" (taSelected)="changedModel($event)" required>
+                <ng-template #itemTpl let-result>
+                  <span>{{result.result}}</span>
+                </ng-template>
+              </ng-container>
+            </div>
+            <div class="col-3">
+              <p class="listing-label">VIN</p>
+              <p class="listing-value" *ngIf="!editing.basic">{{ listingObject.vin }}</p>
+              <ng-container *ngIf="editing.basic">
+                <input class="form-control" type="text" name="vin" ngxTypeahead [(ngModel)]="listingObject.vin" [value]="listingObject.vin"
+                />
+              </ng-container>
+            </div>
+            <div class="col-3">
+              <p class="listing-label">Reserve price?</p>
+              <p class="listing-value" *ngIf="!editing.basic">{{ listingObject.reservePriceCheck == '1' ? 'yes' : 'no' }}</p>
+              <ng-container *ngIf="editing.basic">
+                <div class="custom-control custom-radio custom-control-inline ">
+                  <input type="radio" id="reservePriceCheckYes" name="reservePriceCheck" class="custom-control-input" [(ngModel)]="listingObject.reservePriceCheck"
+                    value="1" />
+                  <label class="custom-control-label" for="reservePriceCheckYes">Yes</label>
+                </div>
+                <div class="ml-5 custom-control custom-radio custom-control-inline">
+                  <input type="radio" id="reservePriceCheckNo" name="reservePriceCheck" class="custom-control-input" [(ngModel)]="listingObject.reservePriceCheck"
+                    value="0" />
+                  <label class="custom-control-label" for="reservePriceCheckNo">No</label>
+                </div>
+              </ng-container>
+            </div>
+            <div class="col-3">
+              <p class="listing-label">Suggested Reserve price</p>
+              <p class="listing-value" *ngIf="!editing.basic">{{ listingObject.reservePrice != '' ? listingObject.reservePrice : 'none' }}</p>
+              <p class="listing-value" *ngIf="editing.basic">
+                <input type='text' class="form-control" [(ngModel)]="listingObject.reservePrice" name="reservePrice" />
+              </p>
+            </div>
+            <div class="col-3">
+              <p class="listing-label">Years owned</p>
+              <p class="listing-value" *ngIf="!editing.basic">{{ listingObject.yearsOwned }}</p>
+              <p class="listing-value" *ngIf="editing.basic">
+                <select name="" id="" class="form-control" name="yearsOwned" [(ngModel)]="listingObject.yearsOwned">
+                  <option value="">Select</option>
+                  <option value="{{year}}" *ngFor="let year of range(1, 20).reverse(); last as isLast">{{ year }}
+                    <span *ngIf="isLast">+</span>
+                  </option>
+                </select>
+              </p>
+            </div>
+            <div class="col-3">
+              <p class="listing-label">Number of owners</p>
+              <p class="listing-value" *ngIf="!editing.basic">{{ listingObject.owners }}</p>
+              <p class="listing-value" *ngIf="editing.basic">
+                <select name="" id="" class="form-control" name="owners" [(ngModel)]="listingObject.owners">
+                  <option value="">Select</option>
+                  <option value="{{owners}}" *ngFor="let owners of range(1, 10).reverse(); last as isLast">{{ owners }}
+                    <span *ngIf="isLast">+</span>
+                  </option>
+                </select>
+              </p>
+            </div>
+            <div class="col-3">
+              <p class="listing-label">Roadworthy</p>
+              <p class="listing-value" *ngIf="!editing.basic">{{ listingObject.roadworthy == '1' ? 'yes' : 'no' }}</p>
+              <ng-container *ngIf="editing.basic">
+                <div class="custom-control custom-radio custom-control-inline ">
+                  <input type="radio" id="radioRoadworthyYes" name="roadworthy" class="custom-control-input" [(ngModel)]="listingObject.roadworthy"
+                    value="1" />
+                  <label class="custom-control-label" for="radioRoadworthyYes">Yes</label>
+                </div>
+                <div class="ml-5 custom-control custom-radio custom-control-inline">
+                  <input type="radio" id="radioRoadworthyNo" name="roadworthy" class="custom-control-input" [(ngModel)]="listingObject.roadworthy"
+                    value="0" />
+                  <label class="custom-control-label" for="radioRoadworthyNo">No</label>
+                </div>
+              </ng-container>
+            </div>
+            <div class="col-3">
+              <p class="listing-label">Accident History</p>
+              <p class="listing-value" *ngIf="!editing.basic">{{ listingObject.accidents == '1' ? 'yes' : 'no' }}</p>
+              <ng-container *ngIf="editing.basic">
+                <div class="custom-control custom-radio custom-control-inline ">
+                  <input type="radio" id="radioaccidentsYes" name="accidents" class="custom-control-input" [(ngModel)]="listingObject.accidents"
+                    value="1" />
+                  <label class="custom-control-label" for="radioaccidentsYes">Yes</label>
+                </div>
+                <div class="ml-5 custom-control custom-radio custom-control-inline">
+                  <input type="radio" id="radioaccidentsNo" name="accidents" class="custom-control-input" [(ngModel)]="listingObject.accidents"
+                    value="0" />
+                  <label class="custom-control-label" for="radioaccidentsNo">No</label>
+                </div>
+              </ng-container>
+            </div>
+            <div class="col-6">
+              <p class="listing-label">Any major issues?</p>
+              <p class="listing-value" *ngIf="!editing.basic">{{ listingObject.issuesCheck == '1' ? 'yes' : 'no' }}</p>
+              <ng-container *ngIf="editing.basic">
+                <div class="custom-control custom-radio custom-control-inline ">
+                  <input type="radio" id="radioissuesCheckYes" name="issuesCheck" class="custom-control-input" [(ngModel)]="listingObject.issuesCheck"
+                    value="1" />
+                  <label class="custom-control-label" for="radioissuesCheckYes">Yes</label>
+                </div>
+                <div class="ml-5 custom-control custom-radio custom-control-inline">
+                  <input type="radio" id="radioissuesCheckNo" name="issuesCheck" class="custom-control-input" [(ngModel)]="listingObject.issuesCheck"
+                    value="0" />
+                  <label class="custom-control-label" for="radioissuesCheckNo">No</label>
+                </div>
+              </ng-container>
+            </div>
+            <div class="col-3">
+              <p class="listing-label">Mileage</p>
+              <p class="listing-value" *ngIf="!editing.basic">{{ listingObject.mileage }}</p>
+              <p class="listing-value" *ngIf="editing.basic">
+                <input type='text' class="form-control" [(ngModel)]="listingObject.mileage" name="mileage" />
+              </p>
+            </div>
+            <div class="col-3">
+              <p class="listing-label">Mileage Unit</p>
+              <p class="listing-value" *ngIf="!editing.basic">{{ listingObject.mileageUnit }}</p>
+              <p class="listing-value" *ngIf="editing.basic">
+                <select name="mileageUnit" id="" class="form-control" [(ngModel)]="listingObject.mileageUnit">
+                  <option value="">Select</option>
+                  <option value="mph">mph</option>
+                  <option value="Km">Km</option>
+                </select>
+              </p>
+            </div>
+            <div class="col-6">
+              <p class="listing-label">Reason for sale</p>
+              <p class="listing-value" *ngIf="!editing.basic">{{ listingObject.saleReason }}</p>
+              <textarea class="form-control" [(ngModel)]="listingObject.saleReason" class="form-control" name="saleReason" *ngIf="editing.basic"></textarea>
+            </div>
+            <div class="col-6" *ngIf="listingObject.issues">
+              <p class="listing-label">Listing of major issues</p>
+              <p class="listing-value" *ngIf="!editing.basic">{{ listingObject.issues }}</p>
+              <textarea class="form-control" [(ngModel)]="listingObject.issues" name="issues" *ngIf="editing.basic"></textarea>
+            </div>
+          </div>
+        </form>
+        <hr />
+
+        <div [hidden]="listingObject == undefined || !listingObject.address">
+          <div class="edit-listing-title d-flex">
+            <h2>LOCATION</h2>
+            <a (click)="confirmEdit('location')" class="btn-edit-listing flex-fill">{{ editing.location ? 'Confirm' : 'Edit' }}</a>
+          </div>
+          <div class="row" *ngIf="!editing.location && listingObject && listingObject?.address">
+            <div class="col-3">
+              <p class="listing-label">Address</p>
+              <p class="listing-value" *ngIf="!editing.location">{{ listingObject.address.name }}</p>
+            </div>
+            <div class="col-3">
+              <p class="listing-label">City</p>
+              <p class="listing-value" *ngIf="!editing.location">{{ listingObject.address.city }}</p>
+            </div>
+            <div class="col-3">
+              <p class="listing-label">State</p>
+              <p class="listing-value" *ngIf="!editing.location">{{ listingObject.address.state }}</p>
+            </div>
+            <div class="col-3">
+              <p class="listing-label">Zip code</p>
+              <p class="listing-value" *ngIf="!editing.location">{{ listingObject.address.zipcode }}</p>
+            </div>
+          </div>
+
+          <div class="row" [hidden]="!editing.location">
+            <div class="col-12">
+              <label for="" class="pb-1">Zipcode</label>
+              <input class="form-control p-4" type="text" placeholder="Please type here..." autocomplete="off" autocorrect="off" autocapitalize="none"
+                spellcheck="false" #address name="addressPlace" (focusout)="closeSearchGroup()" (focuson)="showSearchGroupToggle()"
+                [(ngModel)]="searchData.input" (ngModelChange)="querySearch($event)" />
+              <div class="alert alert-danger" style="margin-top:20px;" [hidden]="!(addressChanged && invalidAddress)" translate>
+                Please specify your address better. Are you missing the zipcode?
+              </div>
+              <ng-container *ngIf="showSearchGroup && (searchData.places.length > 0)">
+                <div class="search-group-box">
+                  <ul *ngIf="searchData.places.length > 0">
+                    <h4>Location</h4>
+                    <li *ngFor="let item of searchData.places" (click)="selectPlace(item)">
+                      <i class="icon ion-ios-pin"></i> {{item}}</li>
+                  </ul>
+                </div>
+              </ng-container>
+            </div>
+
+            <div class="col-12" [hidden]="!(addressChanged && !invalidAddress)">
+              <label for="" class="pb-1 mt-1">Street Address</label>
+              <input class="form-control p-4" name="address_name" type="text" #streetName [(ngModel)]="formData.address_name" />
+            </div>
+
+            <div class="col-12 mt-2" [hidden]="!(addressChanged && !invalidAddress)">
+              <label for="" class="pb-1">City</label>
+              <input class="form-control p-4" type="text" name="address_city" readonly="readonly" #city [(ngModel)]="formData.address_city"
+              />
+            </div>
+
+            <div class="col-12 mt-2" [hidden]="!(addressChanged && !invalidAddress)">
+              <label for="" class="pb-1">State</label>
+              <input class="form-control p-4" type="text" name="address_state" readonly="readonly" #state [(ngModel)]="formData.address_state"
+              />
+            </div>
+
+            <div class="col-12 mt-2" [hidden]="!(addressChanged && !invalidAddress)">
+              <label for="" class="pb-1">Zipcode</label>
+              <input class="form-control p-4" type="text" name="address_zipcode" #zipcode readonly="readonly" [(ngModel)]="formData.address_zipcode"
+              />
+            </div>
+
+            <div class="col-12 mt-2" [hidden]="!(addressChanged && !invalidAddress)">
+              <label for="" class="pb-1">Country</label>
+              <input class="form-control p-4" type="text" name="address_country" readonly="readonly" #country [(ngModel)]="formData.address_country"
+              />
+            </div>
+          </div>
+
+          <hr />
+        </div>
+
+        <div *ngIf="listingObject != undefined && listingObject.transmission">
+          <div class="edit-listing-title d-flex">
+            <h2>ADDITIONAL INFORMATION</h2>
+            <a (click)="confirmEdit('additional')" class="btn-edit-listing flex-fill">{{ editing.additional ? 'Confirm' : 'Edit' }}</a>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <p class="listing-label">Description</p>
+              <p class="listing-value" *ngIf="!editing.additional" [innerHtml]="listingObject.description"></p>
+              <p class="listing-value" *ngIf="editing.additional">
+                <editor name="description" [(ngModel)]="listingObject.description" [init]="tinyMceSettings"></editor>
+              </p>
+            </div>
+            <div class="col-3">
+              <p class="listing-label">Fuel type</p>
+              <p class="listing-value" *ngIf="!editing.additional">{{ listingObject.fuelType }}</p>
+              <p class="listing-value" *ngIf="editing.additional">
+                <select name="" id="" class="form-control" name="fuelType" [(ngModel)]="listingObject.fuelType">
+                  <option value="">Select</option>
+                  <option value="Gasoline">Gasoline</option>
+                  <option value="Diesel">Diesel</option>
+                  <option value="Methanol">Methanol</option>
+                  <option value="Natural gas">Natural gas</option>
+                  <option value="Biodiesel">Biodiesel</option>
+                  <option value="Electric">Electric</option>
+                </select>
+              </p>
+            </div>
+            <div class="col-6">
+              <p class="listing-label">Transmission</p>
+              <p class="listing-value" *ngIf="!editing.additional">{{ listingObject.gearbox }}</p>
+              <p class="listing-value" *ngIf="editing.additional">
+                <select name="gearbox" id="" class="form-control" [(ngModel)]="listingObject.gearbox">
+                  <option value="">Select</option>
+                  <option value="2-speed, automatic">2-speed, automatic</option>
+                  <option value="3-speed, automatic">3-speed, automatic</option>
+                  <option value="4-speed, automatic">4-speed, automatic</option>
+                  <option value="5-speed, automatic">5-speed, automatic</option>
+                  <option value="6-speed, automatic">6-speed, automatic</option>
+                  <option value="7-speed, automatic">7-speed, automatic</option>
+                  <option value="8-speed, automatic">8-speed, automatic</option>
+                  <option value="3-speed, manual">3-speed, manual</option>
+                  <option value="4-speed, manual">4-speed, manual</option>
+                  <option value="5-speed, manual">5-speed, manual</option>
+                  <option value="6-speed, manual">6-speed, manual</option>
+                  <option value="7-speed, manual">7-speed, manual</option>
+                  <option value="5-speed, F1 / DSG / SMG">5-speed, F1 / DSG / SMG</option>
+                  <option value="6-speed, F1 / DSG / SMG">6-speed, F1 / DSG / SMG</option>
+                  <option value="7-speed, F1 / DSG / SMG">7-speed, F1 / DSG / SMG</option>
+                  <option value="8-speed, F1 / DSG / SMG">8-speed, F1 / DSG / SMG</option>
+                </select>
+              </p>
+            </div>
+            <div class="col-3">
+              <p class="listing-label">Drivetrain Type</p>
+              <p class="listing-value" *ngIf="!editing.additional">{{ listingObject.transmission }}</p>
+              <p class="listing-value" *ngIf="editing.additional">
+                <select name="" id="" class="form-control" name="transmission" [(ngModel)]="listingObject.transmission">
+                  <option value="">Select</option>
+                  <option value="2WD">2WD</option>
+                  <option value="4WD">4WD</option>
+                  <option value="AWD">AWD</option>
+                </select>
+              </p>
+            </div>
+            <div class="col-3">
+              <p class="listing-label">Engine size</p>
+              <p class="listing-value" *ngIf="!editing.additional">{{ listingObject.engineSize }}</p>
+              <p class="listing-value" *ngIf="editing.additional">
+                <input name="engineSize" id="" class="form-control" [(ngModel)]="listingObject.engineSize">
+              </p>
+            </div>
+            <div class="col-3">
+              <p class="listing-label">Number of cylinders</p>
+              <p class="listing-value" *ngIf="!editing.additional">{{ listingObject.cylinders }}</p>
+              <p class="listing-value" *ngIf="editing.additional">
+                <select name="" id="" class="form-control" [(ngModel)]="listingObject.cylinders" name="cylinders">
+                  <option value="">Select</option>
+                  <option value="4">4</option>
+                  <option value="6">6</option>
+                  <option value="8">8</option>
+                </select>
+              </p>
+            </div>
+            <div class="col-3">
+              <p class="listing-label">Interior (material type for seats)</p>
+              <p class="listing-value" *ngIf="!editing.additional">{{ listingObject.seatsMaterial }}</p>
+              <p class="listing-value" *ngIf="editing.additional">
+                <select name="" id="" class="form-control" name="seatsMaterial">
+                  <option value="">Select</option>
+                  <option value="Leather">Leather</option>
+                  <option value="Vinyl">Vinyl</option>
+                  <option value="Cloth">Cloth</option>
+                  <option value="Other">Other</option>
+                </select>
+              </p>
+            </div>
+            <div class="col-3">
+              <p class="listing-label">Interior color</p>
+              <p class="listing-value" *ngIf="!editing.additional">{{ listingObject.trimColorCode }}</p>
+              <p class="listing-value" *ngIf="editing.additional">
+                <input type='text' class="form-control" [(ngModel)]="listingObject.trimColorCode" name="trimColorCode" />
+              </p>
+            </div>
+            <div class="col-3">
+              <p class="listing-label">Exterior color</p>
+              <p class="listing-value" *ngIf="!editing.additional">{{ listingObject.exteriorColorCode }}</p>
+              <p class="listing-value" *ngIf="editing.additional">
+                <input type='text' class="form-control" [(ngModel)]="listingObject.exteriorColorCode" name="exteriorColorCode" />
+              </p>
+            </div>
+            <div class="col-3">
+              <p class="listing-label">Vehicle factory options</p>
+              <p class="listing-value" *ngIf="!editing.additional">{{ listingObject.factoryOptions }}</p>
+              <p class="listing-value" *ngIf="editing.additional">
+                <input type='text' class="form-control" [(ngModel)]="listingObject.factoryOptions" name="factoryOptions" />
+              </p>
+            </div>
+            <div class="col-6">
+              <p class="listing-label">Modifications</p>
+              <p class="listing-value" *ngIf="!editing.additional">{{ listingObject.modifications }}</p>
+              <p class="listing-value" *ngIf="editing.additional">
+                <textarea name="" id="" cols="30" rows="5" class="form-control" [(ngModel)]="listingObject.modifications" placeholder="Any comment or additional information? Let us know."></textarea>
+              </p>
+            </div>
+            <div class="col-6">
+              <p class="listing-label">Detailed description of known issues</p>
+              <p class="listing-value" *ngIf="!editing.additional">{{ listingObject.knownIssues == '' ? 'none' : listingObject.knownIssues }}</p>
+              <p class="listing-value" *ngIf="editing.additional">
+                <textarea name="" id="" cols="30" rows="5" class="form-control" [(ngModel)]="listingObject.knownIssues" placeholder=" "></textarea>
+              </p>
+            </div>
+            <div class="col">
+              <p class="listing-label">Any comment or additional information? Let us know.</p>
+              <p class="listing-value" *ngIf="!editing.additional">{{ listingObject.factoryOptions }}</p>
+              <p class="listing-value" *ngIf="editing.additional">
+                <textarea name="" id="" cols="30" rows="5" class="form-control" [(ngModel)]="listingObject.factoryOptions" placeholder=" "></textarea>
+              </p>
+            </div>
+            <div class="col-6">
+              <p class="listing-label">Other items of interest that you would like to mention</p>
+              <p class="listing-value" *ngIf="!editing.additional">{{ listingObject.watchout }}</p>
+              <p class="listing-value" *ngIf="editing.additional">
+                <textarea name="" id="" cols="30" rows="5" class="form-control" [(ngModel)]="listingObject.watchout" placeholder=" "></textarea>
+              </p>
+            </div>
+<!--             <div class="col-3">
+              <p class="listing-label">Country of region</p>
+              <p class="listing-value" *ngIf="!editing.additional">{{ listingObject.country }}</p>
+              <p class="listing-value" *ngIf="editing.additional">
+                <input type='text' class="form-control" [(ngModel)]="listingObject.country" name="country" />
+              </p>
+            </div> -->
+<!--             <div class="col-3">
+              <p class="listing-label">Engine horsepower</p>
+              <p class="listing-value" *ngIf="!editing.additional">{{ listingObject.engineHorsepower }}</p>
+              <p class="listing-value" *ngIf="editing.additional">
+                <input type='text' class="form-control" [(ngModel)]="listingObject.engineHorsepower" name="engineHorsepower" />
+              </p>
+            </div>
+            <div class="col-3">
+              <p class="listing-label">Engine torque</p>
+              <p class="listing-value" *ngIf="!editing.additional">{{ listingObject.engineTorque }}</p>
+              <p class="listing-value" *ngIf="editing.additional">
+                <input type='text' class="form-control" [(ngModel)]="listingObject.engineTorque" name="engineTorque" />
+              </p>
+            </div> -->
+            <div class="col-3">
+              <p class="listing-label">Engine Top Speed</p>
+              <p class="listing-value" *ngIf="!editing.additional">{{ listingObject.engineTopSpeed }}</p>
+              <p class="listing-value" *ngIf="editing.additional">
+                <input type='text' class="form-control" [(ngModel)]="listingObject.engineTopSpeed" name="engineTopSpeed" />
+              </p>
+            </div>
+            <div class="col-3">
+              <p class="listing-label">Engine TP Units</p>
+              <p class="listing-value" *ngIf="!editing.additional">{{ listingObject.engineTopSpeed }}</p>
+              <p class="listing-value" *ngIf="editing.additional">
+                <select name="engineTopSpeedUnits" id="" class="form-control" [(ngModel)]="listingObject.engineTopSpeedUnits">
+                  <option value="">Select</option>
+                  <option value="mph">mph</option>
+                  <option value="km/h">km/h</option>
+                </select>
+              </p>
+            </div>
+            <div class="col-6">
+              <p class="listing-label">0-60 mph acceleration (sec)</p>
+              <p class="listing-value" *ngIf="!editing.additional">{{ listingObject.mphAcceleration }}</p>
+              <p class="listing-value" *ngIf="editing.additional">
+                <input type='text' class="form-control" [(ngModel)]="listingObject.mphAcceleration" name="mphAcceleration" />
+              </p>
+            </div>
+            <div class="col-6">
+              <p class="listing-label">0-100 km/h acceleration (sec)</p>
+              <p class="listing-value" *ngIf="!editing.additional">{{ listingObject.kmhAcceleration }}</p>
+              <p class="listing-value" *ngIf="editing.additional">
+                <input type='text' class="form-control" [(ngModel)]="listingObject.kmhAcceleration" name="kmhAcceleration" />
+              </p>
+            </div>
+          </div>
+
+          <hr />
+        </div>
+
+        <div *ngIf="listingObject != undefined && listingObject['registerStep'] != 'waiting-approval'">
+          <div class="edit-listing-title d-flex">
+            <h2>GALLERY</h2>
+          </div>
+          <input type="file" accept="image/*" #coverUpload style="display:none" (change)="uploadCover(coverUpload.files, cat)">
+          <button class="btn-upload-photo" type="button" (click)="coverUpload.click()" *ngIf="!listingObject.cover">
+            Cover Photo
+          </button>
+          <div class="gallery-cover" [style.background-image]="makeTrustedImage(listingObject?.cover)" *ngIf="listingObject.cover">
+            <button class="btn-cover" type="button" (click)="coverUpload.click()">
+              Cover Photo
+            </button>
+            <div class="thumb-actions" *ngIf="listingObject['exterior'].length == 1">
+              <button class="btn-erase" (click)="removeCover(cat)" type="button">
+                <img src="assets/images/icon-gallery-erase.jpg" />
+              </button>
+            </div>
+          </div>
+
+          <div class="edit-listing-gallery">
+            <ul class="nav mb-3 nav-admin-user" role="tablist">
+              <ng-container *ngFor="let cat of categories; let i = index">
+                <li class="nav-item">
+                  <a class="nav-link" data-toggle="pill" (click)="changeTab('gallery'+cat)" [class.active]="currentTab == 'gallery'+cat" role="tab"
+                    aria-selected="true">
+                    <span class="txtCat">{{cat}}</span>
+                    <span *ngIf="listingObject[cat] != undefined">({{listingObject[cat].length}})</span>
+                  </a>
+                </li>
+              </ng-container>
+            </ul>
+
+            <input type="file" accept="image/*" #file style="display:none" (change)="uploadFiles(file.files,  modalLoading)" multiple>
+            <button class="  btn-upload-photo" (click)="file.click()" type="button">Add files</button>
+
+            <ng-container *ngFor="let cat of categories; let i = index">
+              <div class="tab-pane " [hidden]="currentTab != 'gallery'+cat" id="gallery{{cat}}" role="tabpanel" aria-labelledby="exterior-data-tab"
+                dnd-sortable-container [sortableData]="listingObject[cat]">
+                <div class="row" *ngIf="listingObject[cat] != undefined">
+                  <a class="col-3 p-2 sort-item" *ngFor="let img of listingObject[cat]; let i=index" dnd-sortable [sortableIndex]="i">
+
+                    <div class="item-edit-listing">
+                      <button class="btn-edt-listing" type="button" (click)="removeImg(cat, i)">
+                        <i class="icon ion-md-trash"></i>
+                      </button>
+                    </div>
+                    <img (click)="openAlbum(cat, i)" [src]="getThumb(img, 360)" [ngClass]="{'uploading': checkBase(img)}" alt="" class="w-100"
+                      criaturoImgDefault="{{img}}" />
+                  </a>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+
+          <hr />
+        </div>
+
+        <div *ngIf="listingObject != undefined && listingObject.records">
+          <div class="edit-listing-title d-flex">
+            <h2>RECORDS</h2>
+          </div>
+          <div class="d-flex" style="flex-wrap: wrap;">
+            <a href="{{item.url}}" target="_blank" class="col-4 records-item mt-2" *ngFor="let item of listingObject.records">
+              <div class="d-flex" style="overflow: hidden;">
+                <img src="assets/images/records_pdf.svg" class="records-icon" alt="" *ngIf="item.fileType == 'pdf'" />
+                <img src="assets/images/records_zip.svg" class="records-icon" alt="" *ngIf="item.fileType == 'zip'" />
+                <img src="assets/images/records_jpg.svg" class="records-icon" alt="" *ngIf="item.fileType == 'png' || item.fileType == 'jpg' || item.fileType == 'jpeg' || item.fileType == 'gif'"
+                />
+                <div class="flex-fill">
+                  <strong>{{item.filename}}</strong>
+                  <span>{{item.size}} KB</span>
+                </div>
+              </div>
+            </a>
+          </div>
+          <hr />
+        </div>
+
+        <div *ngIf="listingObject != undefined && listingObject.inspection">
+          <div class="edit-listing-title d-flex">
+            <h2>INSPECTION</h2>
+          </div>
+          <div class="d-flex align-items-center" style="flex-wrap: wrap;">
+            <a href="{{listingObject.inspection}}" target="_blank" class="col-4 records-item mt-2">
+              <div class="d-flex" style="overflow: hidden;">
+                <img src="assets/images/records_pdf.svg" class="records-icon" alt="" />
+                <!-- *ngIf="item.fileType == 'pdf'" />
+                  <img src="assets/images/records_zip.svg" class="records-icon" alt="" *ngIf="item.fileType == 'zip'" />
+                  <img src="assets/images/records_jpg.svg" class="records-icon" alt="" *ngIf="item.fileType == 'png' || item.fileType == 'jpg' || item.fileType == 'jpeg' || item.fileType == 'gif'" -->
+                <!-- /> -->
+                <div class="flex-fill">
+                  <strong>Inspection File</strong>
+                  <!-- <span>50 KB</span> -->
+                </div>
+              </div>
+            </a>
+            <div class="d-flex flex-fill flex-column" *ngIf="!listingObject.verified">
+              <span class="inspection-text">This inspection is awating for review</span>
+              <div class="line"></div>
+              <div class="d-flex justify-content-end">
+                <button class="btn-reject" (click)="reviewInspection(false)">Reject</button>
+                <button class="btn-accept ml-2" (click)="reviewInspection(true)">Approve</button>
+              </div>
+            </div>
+          </div>
+          <hr />
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <a (click)="nextStep()">
+            <button class="btn-newcar-style float-right">
+              Next step
+              <i class="ml-5 float-right icon ion-md-arrow-forward"></i>
+            </button>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="pink-loading" *ngIf="isLoading"></div>

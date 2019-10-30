@@ -1,0 +1,1041 @@
+<style>
+  .tab-content>.tab-pane {
+    display: block;
+    opacity: 1;
+  }
+</style>
+<ng-container *ngIf="!isLoadingListings">
+<section id="bid-image-full" class="d-flex" *ngIf="detail != null && detail['exterior']">
+
+  <button class="bid-image-btn" (click)="openAlbum('full',0, true)">
+    View photos
+  </button>
+
+  <img [src]="getCover(detail?.cover)" alt="" />
+</section>
+
+<section class="header-bid" *ngIf="detail">
+  <div class="container d-md-flex">
+    <div class="header-bid-dados mr-md-auto">
+      <div class="d-flex">
+        <h1 class="align-self-center">{{ detail.year }} {{ detail.brand }} {{ detail.model }}
+          <img class="inspection-badge" src="assets/images/badge.svg" alt="Inspection approved" *ngIf="detail.verified">
+        </h1>
+        <button class="ml-4 align-self-center btn-bid-like" *ngIf="user != null" [class.actived]="checkFollowing(detail.id, i)" (click)="toggleFollowing(detail.id, i)"
+          id="btnLikemaster"></button>
+      </div>
+      <p class="header-bid-dados-address" *ngIf="detail.address && detail.address.name && detail.address.state && detail.address.zipcode">
+        {{detail.address.city}}, {{detail.address.state}}, {{detail.address.country}}
+      </p>
+
+      <button (click)="openModalInspection(modalRequestInspection)" *ngIf="!detail.verified" class="button-style">Request Inspection</button>
+      <button (click)="openModalcontact(modalContactOwner)" class="button-style m-3">Contact Owner</button>
+    </div>
+    <div class="header-bid-user-dados mr-4" *ngIf="detail.user != undefined">
+      <a routerLink="/user-profile/{{detail.user.id}}">{{detail.user.name}}</a>
+      <div class="bid-user-rating">
+        <ul class="user-rate-group">
+          <li [ngClass]="{checked: detail.user.rating >= 1}"></li>
+          <li [ngClass]="{checked: detail.user.rating >= 2}"></li>
+          <li [ngClass]="{checked: detail.user.rating >= 3}"></li>
+          <li [ngClass]="{checked: detail.user.rating >= 4}"></li>
+          <li [ngClass]="{checked: detail.user.rating == 5}"></li>
+        </ul>
+        <div class="bid-user-qtd-rating">
+          <span>{{detail.user.ratingCount}}</span> ratings</div>
+      </div>
+    </div>
+    <div class="header-bid-user">
+      <a routerLink="/user-profile/{{detail.user.id}}">
+        <img [src]="getUserImage(detail.user.image)" />
+      </a>
+    </div>
+  </div>
+  <div class="container">
+    <div class="bid-tabs">
+      <ul class="nav nav-pills" id="pills-tab" role="tablist">
+        <li class="nav-item">
+          <a class="" [class.active]="currentTab == 'bid-information'" (click)="changeTab('bid-information')" id="bid-information-tab"
+            data-toggle="pill">Overview</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="" [class.active]="currentTab == 'bid-gallery'" (click)="changeTab('bid-gallery')" id="bid-gallery-tab" data-toggle="pill">Gallery</a>
+        </li>
+        <li class="nav-item">
+          <a class="" [class.active]="currentTab == 'bid-records'" (click)="changeTab('bid-records')" id="bid-records-tab" data-toggle="pill">Records</a>
+        </li>
+        <li class="nav-item">
+          <a class="" [class.active]="currentTab == 'bid-profile'" (click)="changeTab('bid-profile')" id="bid-profile-tab" data-toggle="pill">Profile</a>
+        </li>
+        <li class="nav-item">
+          <a class="" [class.active]="currentTab == 'bid-auction'" (click)="changeTab('bid-auction')" id="bid-auction-tab" data-toggle="pill">Comments</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="mt-4">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12 col-md-8 tab-content" [class.col-12]="!logged">
+        <!-- tab-1 -->
+        <div class="tab-pane fade show active" id="bid-auction" role="tabpanel" aria-labelledby="bid-auction-tab" *ngIf="currentTab == 'bid-auction'">
+          <div class="bid-area comments-area">
+            <div class="comments-area-form" *ngIf="logged">
+              <h3 class="m-4 activity-title">Comments</h3>
+              <form (ngSubmit)="submitComment()" [formGroup]="commentForm" novalidate>
+                <div class="comment-area-input pl-4 pr-4 pb-3">
+                  <div class="d-flex flex-wrap">
+                    <div class="profile-bid-user">
+                      <img [src]="getUserImage(user.image)" *ngIf="user != undefined" />
+                    </div>
+                    <textarea class="flex-fill" id="bid-textarea-comment" cols="30" rows="10" placeholder="Send a message" formControlName="comment"
+                      required></textarea>
+                  </div>
+                  <button type="submit" class="float-right" id="bid-sendcomment" [disabled]="commentForm.invalid">
+                    <i class="fas fa-cog fa-spin" [hidden]="!isLoading"></i> Comment
+                  </button>
+                  <div class="clearfix"></div>
+                </div>
+              </form>
+            </div>
+
+            <div class="p-4" *ngIf="comments.length">
+              <div class="comments-list-item" *ngFor="let comment of comments; let i = index">
+                <div class="comments-list-user d-flex">
+                  <div class="profile-bid-user">
+                    <a routerLink="/user-profile/{{comment.user.id}}" class="bid-title-user mb-0">
+                      <img [src]="getUserImage(comment.user.image)" />
+                    </a>
+                  </div>
+                  <div class="pl-4">
+                    <a routerLink="/user-profile/{{comment.user.id}}" class="bid-title-user mb-0">{{ comment.user.name }}</a>
+                    <p class="bid-date-user" *ngIf="comment?.timestamp?._seconds == undefined">{{ comment?.timestamp | amFromUnix | amTimeAgo }}</p>
+                    <p class="bid-date-user" *ngIf="comment?.timestamp?._seconds != undefined">{{ comment?.timestamp?._seconds | amFromUnix | amTimeAgo }}</p>
+                  </div>
+                </div>
+                <div class="comments-list-content">
+                  <p>{{ comment.comment }}</p>
+                </div>
+                <div class="comments-list-actions d-flex">
+                  <a (click)="commentLikeCount(comment.id, i)">
+                    <i class="icon ion-md-thumbs-up"></i> {{comment.likesCount ? comment.likesCount : 0}}</a>
+                  <a class="ml-4" (click)="openModalReport(comment, modalReportComment)" *ngIf="logged">
+                    <i class="icon ion-md-flag"></i> Report Comment</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- tab-2 -->
+        <div class="tab-pane" id="bid-information" role="tabpanel" aria-labelledby="bid-information-tab" *ngIf="detail != null && currentTab == 'bid-information'">
+          <h3 class="tabs-titles">Summary</h3>
+          <div [innerHTML]="detail.description " class="tabs-txts mt-3" *ngIf="detail != undefined"></div>
+
+          <h3 class="tabs-titles mt-5">Specifications</h3>
+
+
+          <ul class="specifications-list d-flex align-content-start flex-wrap" *ngIf="detail != undefined">
+            <li class="d-flex align-self-center">
+              <div class="specifications-list-icons">
+                <img src="assets/images/icons-form/fuel-type.svg" alt="" />
+              </div>
+              <div class="specifications-list-info">
+                <strong>Fuel Type</strong>
+                <p>{{detail.fuelType}}</p>
+              </div>
+            </li>
+
+            <li class="d-flex align-self-center">
+              <div class="specifications-list-icons">
+                <img src="assets/images/icons-form/gearbox.svg" alt="" />
+              </div>
+              <div class="specifications-list-info">
+                <strong>Transmission</strong>
+                <p>{{detail.gearbox}}</p>
+              </div>
+            </li>
+
+
+            <li class="d-flex align-self-center">
+              <div class="specifications-list-icons">
+                <img src="assets/images/icons-form/drive-transmission.svg" alt="" />
+              </div>
+              <div class="specifications-list-info">
+                <strong>Drivetrain Type</strong>
+                <p>{{detail.transmission}}</p>
+              </div>
+            </li>
+
+
+            <li class="d-flex align-self-center">
+              <div class="specifications-list-icons">
+                <img src="assets/images/icons-form/engine-size.svg" alt="" />
+              </div>
+              <div class="specifications-list-info">
+                <strong>Engine size</strong>
+                <p>{{detail.engineSize}}</p>
+              </div>
+            </li>
+
+
+            <li class="d-flex align-self-center">
+              <div class="specifications-list-icons">
+                <img src="assets/images/icons-form/number-of-cylinders.svg" alt="" />
+              </div>
+              <div class="specifications-list-info">
+                <strong>Number of cylinders</strong>
+                <p>{{detail.cylinders}} cylinders</p>
+              </div>
+            </li>
+
+
+            <li class="d-flex align-self-center">
+              <div class="specifications-list-icons">
+                <img src="assets/images/icons-form/engine-top-speed.svg" alt="" />
+              </div>
+              <div class="specifications-list-info">
+                <strong>Engine top speed</strong>
+                <p>{{detail.engineTopSpeed}} {{detail.engineTopSpeedUnits}}</p>
+              </div>
+            </li>
+
+
+            <li class="d-flex align-self-center">
+              <div class="specifications-list-icons">
+                <img src="assets/images/icons-form/engine-horsepower_2.svg" alt="" />
+              </div>
+              <div class="specifications-list-info">
+                <strong>Engine horsepower</strong>
+                <p>{{detail.engineHorsepower}} HP</p>
+              </div>
+            </li>
+
+            <li class="d-flex align-self-center">
+              <div class="specifications-list-icons">
+                <img src="assets/images/icons-form/engine-torque.svg" alt="" />
+              </div>
+              <div class="specifications-list-info">
+                <strong>Engine torque</strong>
+                <p>{{detail.engineTorque}} lb-ft</p>
+              </div>
+            </li>
+
+          </ul>
+
+
+          <ul class="specifications-list d-flex align-content-start flex-wrap hidden" showAllToggle=f alse [class.show]="showAllToggle"
+            *ngIf="detail != undefined">
+
+
+            <li class="d-flex align-self-center">
+              <div class="specifications-list-icons">
+                <img src="assets/images/icons-form/60-mph-acceleration.svg" alt="" />
+              </div>
+              <div class="specifications-list-info">
+                <strong>0 - 60 mph acceleration</strong>
+                <p>{{detail.mphAcceleration}}</p>
+              </div>
+            </li>
+
+
+            <li class="d-flex align-self-center">
+              <div class="specifications-list-icons">
+                <img src="assets/images/icons-form/100-mph-acceleration.svg" alt="" />
+              </div>
+              <div class="specifications-list-info">
+                <strong>0 - 100 mph acceleration</strong>
+                <p>Not available</p>
+                <!-- <p>{{detail.kmhAcceleration}}</p> -->
+              </div>
+            </li>
+
+            <li class="d-flex align-self-center">
+              <div class="specifications-list-icons">
+                <img src="assets/images/icons-form/100-mph-acceleration.svg" alt="" />
+              </div>
+              <div class="specifications-list-info">
+                <strong>Mileage</strong>
+                <p>{{detail.mileage}} {{detail.mileageUnit}}</p>
+              </div>
+            </li>
+
+
+            <li class="d-flex align-self-center">
+              <div class="specifications-list-icons">
+                <img src="assets/images/icons-form/interior-seats-material.svg" alt="" />
+              </div>
+              <div class="specifications-list-info">
+                <strong>Interior seats material</strong>
+                <p>{{detail.seatsMaterial}}</p>
+              </div>
+            </li>
+
+
+            <li class="d-flex align-self-center">
+              <div class="specifications-list-icons">
+                <img src="assets/images/icons-form/exterior-color-code.svg" alt="" />
+              </div>
+              <div class="specifications-list-info">
+                <strong>Exterior color</strong>
+                <p>{{detail.exteriorColorCode}}</p>
+              </div>
+            </li>
+
+
+            <li class="d-flex align-self-center">
+              <div class="specifications-list-icons">
+                <img src="assets/images/icons-form/trim-color-code.svg" alt="" />
+              </div>
+              <div class="specifications-list-info">
+                <strong>Interior color</strong>
+                <p>{{detail.trimColorCode}}</p>
+              </div>
+            </li>
+
+            <li class="d-flex align-self-center">
+              <div class="specifications-list-icons">
+                <img src="assets/images/icons-form/number-years-owned.svg" alt="" />
+              </div>
+              <div class="specifications-list-info">
+                <strong>Number of years owned</strong>
+                <p>{{detail.yearsOwned}}</p>
+              </div>
+            </li>
+
+            <li class="d-flex align-self-center">
+              <div class="specifications-list-icons">
+                <img src="assets/images/icons-form/number-of-owners.svg" alt="" />
+              </div>
+              <div class="specifications-list-info">
+                <strong>Number of owners</strong>
+                <p>{{detail.owners}}</p>
+              </div>
+            </li>
+
+
+            <li class="d-flex align-self-center">
+              <div class="specifications-list-icons">
+                <img src="assets/images/icons-form/country-of-origin.svg" alt="" />
+              </div>
+              <div class="specifications-list-info">
+                <strong>Country of origin</strong>
+                <p>{{detail.country}}</p>
+              </div>
+            </li>
+            <!-- <li class="d-flex align-self-center">
+              <div class="specifications-list-icons">
+                <img src="assets/images/icons-form/curb-weight.svg" alt="" />
+              </div>
+              <div class="specifications-list-info">
+                <strong>Curb weight</strong>
+                <p>1200 lbs</p>
+              </div>
+            </li> -->
+          </ul>
+
+
+          <button class="float-right specifications-show-btn collapsed" (click)="showAllToggle = !showAllToggle" [class.show]="showAllToggle"
+            aria-controls="collapsefirst">
+            <p></p>
+          </button>
+
+
+          <ng-container  *ngIf="detail != undefined">
+            <div class="clearfix"></div>
+            <h3 class="tabs-titles mt-5" *ngIf="detail != undefined">Major Issues</h3>
+            <p class="tabs-txts mt-3" *ngIf="detail.issues != undefined">{{detail.issues}}</p>
+
+            <div class="clearfix"></div>
+            <h3 class="tabs-titles mt-5">Know Issues</h3>
+            <p class="tabs-txts mt-3" *ngIf="detail.knownIssues != undefined">{{detail.knownIssues}}</p>
+          </ng-container>
+        </div>
+
+        <!-- tab-3 -->
+        <div class="tab-pane" id="bid-gallery" role="tabpanel" aria-labelledby="bid-gallery-tab" *ngIf="currentTab == 'bid-gallery'">
+          <div class="bid-gallery-filters">
+            <ul class="nav nav-pills d-flex justify-content-sm-center" id="pills-tab" role="tablist">
+
+              <li class="nav-item flex-md-fill">
+                <button [class.active]="currentTabGallery == 'filter-gallery-exterior'" (click)="changeTabGallery('filter-gallery-exterior')">Exterior</button>
+              </li>
+              <li class="nav-item flex-md-fill">
+                <button [class.active]="currentTabGallery == 'filter-gallery-interior'" (click)="changeTabGallery('filter-gallery-interior')">Interior</button>
+              </li>
+              <li class="nav-item flex-md-fill">
+                <button [class.active]="currentTabGallery == 'filter-gallery-underside'" (click)="changeTabGallery('filter-gallery-underside')">Underside</button>
+              </li>
+              <li class="nav-item flex-md-fill">
+                <button [class.active]="currentTabGallery == 'filter-gallery-engine'" (click)="changeTabGallery('filter-gallery-engine')">Engine</button>
+              </li>
+              <li class="nav-item flex-md-fill">
+                <button [class.active]="currentTabGallery == 'filter-gallery-imperfections'" (click)="changeTabGallery('filter-gallery-imperfections')">Imperfections</button>
+              </li>
+            </ul>
+          </div>
+
+          <div class="tab-content tab-content-gallery">
+            <!-- Exterior -->
+            <div class="tab-pane" id="filter-gallery-exterior" *ngIf="currentTabGallery == 'filter-gallery-exterior'">
+              <h3 class="tabs-titles mt-4">Exterior</h3>
+              <!-- <p class="tabs-txts mt-3">No information.</p> -->
+              <hr class="mt-3" />
+
+              <!-- <div class="clearfix">
+                  <ul class="gallery-mode-view float-right mb-4 d-flex">
+                    <li><button class="gallery-viewgrid" id="gallery-viewgrid-big"></button></li>
+                    <li><button class="gallery-viewgrid active" id="gallery-viewgrid-med"></button></li>
+                  </ul>
+                </div> -->
+
+              <div class="gallery-photos-exterior d-flex flex-wrap">
+                <a class="m-2 gallery-photos-squad" (click)="openAlbum('exterior',i)" href="javascript:void(0);" data-toggle="lightbox" data-gallery="img-gallery"
+                  *ngFor="let image of detail.exterior; let i=index">
+                  <img [src]="getThumb(image, 220)" alt="" criaturoImgDefault="{{image}}" />
+                </a>
+
+              </div>
+
+            </div>
+
+          </div>
+          <!-- Interior -->
+          <div class="tab-pane" id="filter-gallery-interior" *ngIf="currentTabGallery == 'filter-gallery-interior'">
+            <h3 class="tabs-titles mt-4">Interior</h3>
+            <!-- <p class="tabs-txts mt-3">
+                  No information.
+                </p> -->
+            <hr class="mt-3" />
+            <!-- <div class="clearfix">
+                  <ul class="gallery-mode-view float-right mb-4 d-flex">
+                    <li><button class="gallery-viewgrid" id="gallery-viewgrid-big"></button></li>
+                    <li><button class="gallery-viewgrid active" id="gallery-viewgrid-med"></button></li>
+                  </ul>
+                </div> -->
+
+            <div class="gallery-photos-exterior d-flex flex-wrap">
+              <a class="m-2 gallery-photos-squad" (click)="openAlbum('interior',i)" href="javascript:void(0);" data-toggle="lightbox" data-gallery="img-gallery"
+                *ngFor="let image of detail.interior; let i=index">
+                <img [src]="getThumb(image, 220)" alt="" criaturoImgDefault="{{image}}" />
+              </a>
+
+            </div>
+          </div>
+          <!-- Underside -->
+          <div class="tab-pane" id="filter-gallery-underside" *ngIf="currentTabGallery == 'filter-gallery-underside'">
+            <h3 class="tabs-titles mt-4">Underside</h3>
+            <!-- <p class="tabs-txts mt-3">
+                  No information.
+                </p> -->
+            <hr class="mt-3" />
+            <!-- <div class="clearfix">
+                  <ul class="gallery-mode-view float-right mb-4 d-flex">
+                    <li><button class="gallery-viewgrid" id="gallery-viewgrid-big"></button></li>
+                    <li><button class="gallery-viewgrid active" id="gallery-viewgrid-med"></button></li>
+                  </ul>
+                </div> -->
+
+            <div class="gallery-photos-exterior d-flex flex-wrap">
+              <a class="m-2 gallery-photos-squad" (click)="openAlbum('underside',i)" href="javascript:void(0);" data-toggle="lightbox"
+                data-gallery="img-gallery" *ngFor="let image of detail.underside; let i=index">
+                <img [src]="getThumb(image, 220)" alt="" criaturoImgDefault="{{image}}" />
+              </a>
+
+            </div>
+          </div>
+          <!-- Engine -->
+          <div class="tab-pane" id="filter-gallery-engine" *ngIf="currentTabGallery == 'filter-gallery-engine'">
+            <h3 class="tabs-titles mt-4">Engine</h3>
+            <!-- <p class="tabs-txts mt-3">
+                  No information.
+                </p> -->
+            <hr class="mt-3" />
+
+
+            <!-- <div class="clearfix">
+                  <ul class="gallery-mode-view float-right mb-4 d-flex">
+                    <li><button class="gallery-viewgrid" id="gallery-viewgrid-big"></button></li>
+                    <li><button class="gallery-viewgrid active" id="gallery-viewgrid-med"></button></li>
+                  </ul>
+                </div> -->
+
+            <div class="gallery-photos-exterior d-flex flex-wrap">
+              <a class="m-2 gallery-photos-squad" (click)="openAlbum('engine',i)" href="javascript:void(0);" data-toggle="lightbox" data-gallery="img-gallery"
+                *ngFor="let image of detail.engine; let i=index">
+                <img [src]="getThumb(image, 220)" alt="" criaturoImgDefault="{{image}}" />
+              </a>
+
+            </div>
+          </div>
+          <!-- Imperctions -->
+          <div class="tab-pane" id="filter-gallery-imperfections" *ngIf="currentTabGallery == 'filter-gallery-imperfections'">
+            <h3 class="tabs-titles mt-4">Imperfections</h3>
+            <!-- <p class="tabs-txts mt-3">
+                  No information.
+                </p> -->
+            <hr class="mt-3" />
+
+            <!-- <div class="clearfix">
+                  <ul class="gallery-mode-view float-right mb-4 d-flex">
+                    <li><button class="gallery-viewgrid" id="gallery-viewgrid-big"></button></li>
+                    <li><button class="gallery-viewgrid active" id="gallery-viewgrid-med"></button></li>
+                  </ul>
+                </div> -->
+
+            <div class="gallery-photos-exterior d-flex flex-wrap">
+              <a class="m-2 gallery-photos-squad" (click)="openAlbum('imperfections',i)" href="javascript:void(0);" data-toggle="lightbox"
+                data-gallery="img-gallery" *ngFor="let image of detail.imperfections; let i=index">
+                <img [src]="getThumb(image, 220)" alt="" criaturoImgDefault="{{image}}" />
+              </a>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- tab-4 -->
+        <div class="tab-pane" id="bid-records" role="tabpanel" aria-labelledby="bid-records-tab" *ngIf="currentTab == 'bid-records'">
+          <div class="bid-area area-maintenance-records">
+            <h3 class="m-4 activity-title">Maintenance records</h3>
+
+            <table class="table-maintenance-records">
+              <tr *ngIf="detail != null && (detail.records == null || (detail.records != null && detail.records.length == 0))">
+                <td>
+                  <small style="text-align: center;padding:10px;width:100%;display:block">No files to show</small>
+                </td>
+              </tr>
+              <tr *ngFor="let item of detail.records">
+                <td>
+                  <a (click)="openFile(item.url, item.fileType, item.filename, modalPdfViewer)" class="d-inline-flex pl-4">
+                    <img src="assets/images/records_pdf.svg" class="pr-3" alt="" *ngIf="item.fileType == 'pdf'" />
+                    <img src="assets/images/records_zip.svg" class="pr-3" alt="" *ngIf="item.fileType == 'zip'" />
+                    <img src="assets/images/records_jpg.svg" class="pr-3" alt="" *ngIf="item.fileType == 'png' || item.fileType == 'jpg' || item.fileType == 'jpeg' || item.fileType == 'gif'"
+                    />
+                    <div class="records-infos">
+                      <h4>{{item.filename}}</h4>
+                      <span></span>
+                    </div>
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <nav class="maintenance-records-pagination" aria-label="maintenance-records-pagination">
+                    <ul class="pagination justify-content-center">
+                      <!-- <li class="page-item disabled"><a class="page-link" href="javascript:void(0);" tabindex="-1">1</a></li> -->
+                      <!--
+                          <li class="page-item"><a class="page-link" href="javascript:void(0);">2</a></li>
+                          <li class="page-item"><a class="page-link" href="javascript:void(0);">3</a></li>
+                          <li class="page-item"><a class="page-link" href="javascript:void(0);">4</a></li>
+                        -->
+                    </ul>
+                  </nav>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- tab-5 -->
+        <div class="tab-pane" id="bid-profile" role="tabpanel" aria-labelledby="bid-profile-tab" *ngIf="currentTab == 'bid-profile'">
+          <div class="d-md-flex bd-highlight">
+            <div class="bid-area bid-profile-box mr-2">
+              <div class="profile-info p-4">
+
+                <div class="profile-photo-user">
+
+                  <img [src]="getUserImage(detail.user.image)" />
+                </div>
+                <a routerLink="/user-profile/{{detail.user.id}}">{{detail.user.name}}</a>
+                <br />
+                <ul class="user-rate-group">
+                  <li [ngClass]="{checked: detail.user.rating >= 1}"></li>
+                  <li [ngClass]="{checked: detail.user.rating >= 2}"></li>
+                  <li [ngClass]="{checked: detail.user.rating >= 3}"></li>
+                  <li [ngClass]="{checked: detail.user.rating >= 4}"></li>
+                  <li [ngClass]="{checked: detail.user.rating == 5}"></li>
+                </ul>
+              </div>
+              <div class="profile-about">
+                <h3 class="activity-title">About</h3>
+                <p [innerHTML]="detail.user.about" *ngIf="detail.user.about != null"></p>
+                <p *ngIf="detail.user.about == null">No information available...</p>
+              </div>
+            </div>
+            <div class="bid-area bid-profile-box ml-md-2">
+              <h3 class="m-3 activity-title">Reviews</h3>
+              <hr />
+              <div class="profile-list-reviews" *ngIf="ratings.length > 0">
+                <div class="profile-reviews-item" *ngFor="let item of ratings">
+                  <div class="profile-reviews-item-header d-flex mb-3">
+                    <a routerLink="/user-profile/{{item.from.id}}">
+                      <img [src]="getUserImage(item.from.image)" alt="" class="profiler-user-thumb" />
+                    </a>
+
+                    <div class="reviews-item-info ml-4">
+                      <a routerLink="/user-profile/{{item.from.id}}">
+                        <h4>{{item.from.name}}</h4>
+
+                        <ul class="user-rate-group">
+                          <li [ngClass]="{checked: item.stars >= 1}"></li>
+                          <li [ngClass]="{checked: item.stars >= 2}"></li>
+                          <li [ngClass]="{checked: item.stars >= 3}"></li>
+                          <li [ngClass]="{checked: item.stars >= 4}"></li>
+                          <li [ngClass]="{checked: item.stars == 5}"></li>
+                        </ul>
+                      </a>
+
+                      <span class="reviews-item-info-date">
+                        {{ item?.timestamp?._seconds | amFromUnix | amLocale: 'en' | amDateFormat: 'MMMM Do YYYY, h:mm:ss a' }}
+                      </span>
+                    </div>
+                  </div>
+                  <p [innerHTML]="item.comment"> </p>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-12 col-md" *ngIf="detail != null && logged
+       ">
+        <div class="sticky-top">
+          <div class="bid-{{getFinishedStatus()}} bid-area mb-3" *ngIf="(timeLeft(detail.auctionStart?._seconds || 0) - dateNow) < 0">
+            <div class="bid-{{getFinishedStatus()}}-information p-3" [ngClass]="{'bd-status-failed': getFinishedStatus() == 'failed',
+                        'bd-status-success': getFinishedStatus() == 'success',
+                        'bd-status-finished': getFinishedStatus() == 'finished'}">
+
+              <div class="row">
+                <div class="col-2">
+                  <span class="bid-{{getFinishedStatus()}}-icon">
+                    <img src="assets/images/bid-{{getFinishedStatus()}}.svg" alt="">
+                  </span>
+                </div>
+                <div class="col-10">
+                  <span class="bid-{{getFinishedStatus()}}-info">{{getFinishedStatus()}}</span>
+                </div>
+              </div>
+              <p class="mt-3">
+                <ng-container *ngIf="getFinishedStatus() == 'failed'">
+                  Unfortunately you missed the auction. Do not give up, things can be different next time.
+                </ng-container>
+                <ng-container *ngIf="getFinishedStatus() == 'finished'">
+                  The auction has come to an end. Do not miss the opportunity to participate next time.
+                </ng-container>
+                <ng-container *ngIf="getFinishedStatus() == 'success'">
+                  Congratulations! You won the auction. We will contact you by email or phone to continue the process.
+                </ng-container>
+              </p>
+            </div>
+            <div class="p-3">
+              <div class="row">
+                <div class="col-4">winner</div>
+                <div class="col-8">
+                  <strong>{{detail.lastBidder?.name || ''}}</strong>
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-4">Bids</div>
+                <div class="col-8">
+                  <strong>{{detail.bidCount}}</strong>
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-4">Final bid</div>
+                <div class="col-8">
+                  <strong>{{detail.price | currency}}</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-3 bid-information-area bid-area" *ngIf="(timeLeft(detail.auctionStart?._seconds || 0) - dateNow) > 0">
+            <h3 class=" activity-title">Bid information</h3>
+
+            <form (ngSubmit)="openModal(modalConfirmBid)" [formGroup]="bidForm" novalidate>
+              <div class="bid-bid-now">
+                <label for="">Place your bid</label>
+
+                <input id="pricemask" class="bid-now-input" type="text" placeholder="$0,000.00" currencyMask formControlName="amount" min="{{basePrice}}"
+                  required />
+                <ng-container *ngIf="!checkBidAmount()">
+                  <button type="submit" class="bid-now-btn" [disabled]="bidForm.invalid" ngbTooltip="Bid lower than current amount">
+                    <!-- <i class="fas fa-cog fa-spin" [hidden]="!isLoadingBids"></i> -->
+                    bid now
+                    <!-- <i class="ml-5 float-right icon ion-md-arrow-forward"></i> -->
+                  </button>
+                </ng-container>
+                <ng-container *ngIf="checkBidAmount()">
+                  <button type="submit" class="bid-now-btn" [disabled]="bidForm.invalid">
+                    <!-- <i class="fas fa-cog fa-spin" [hidden]="!isLoadingBids"></i> -->
+                    bid now
+                    <!-- <i class="ml-5 float-right icon ion-md-arrow-forward"></i> -->
+                  </button>
+                </ng-container>
+              </div>
+            </form>
+
+            <div class="buttons-bids d-flex">
+              <button [class.active]="bidForm.value.amount == 100" class="flex-fill" (click)="bidForm.setValue({ amount: (basePrice + 100) })">
+                + 100
+              </button>
+              <button [class.active]="bidForm.value.amount == 500" class="flex-fill" (click)="bidForm.setValue({ amount: (basePrice + 500) })">
+                + 500
+              </button>
+              <button [class.active]="bidForm.value.amount == 1000" class="flex-fill" (click)="bidForm.setValue({ amount: (basePrice + 1000) })">
+                + 1,000
+              </button>
+              <button [class.active]="bidForm.value.amount == 5000" class="flex-fill" (click)="bidForm.setValue({ amount: (basePrice + 5000) })">
+                + 5,000
+              </button>
+            </div>
+
+            <div class="bid-information-price mt-3">
+              <div class="list-area-pregressbar" *ngIf="detail && detail.auctionStart && detail.auctionStart._seconds">
+                <div class="progressbar" [style.width]="percentage(detail.auctionStart._seconds) + '%'"></div>
+              </div>
+              <div class="bid-information-price d-flex mt-3">
+                <div class="bid-information-currentbid">
+                  <span class="span-style">Current bid</span>
+                  <p class="bid-information-item-price">{{ basePrice | currency }}</p>
+                </div>
+
+                <div class="bid-information-bids ml-md-auto" *ngIf="detail && detail.auctionStart && detail.auctionStart._seconds">
+                  <span class="span-style">Time Left:</span>
+                  <p class="bid-information-time">
+                    <countdown [config]="{ leftTime: timeLeft(detail.auctionStart._seconds) - dateNow }">$!d!d $!h!h $!m!m $!s!s</countdown>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 activity-area bid-area">
+            <h3 class="m-3 activity-title">Activity ({{ activities.length }})</h3>
+            <div class="activity-slider" *ngIf="activities.length">
+              <div class="activity-item ml-3" *ngFor="let activity of activities">
+                <div class="activity-item-prices d-flex">
+                  <div class="profile-bid-user">
+                    <a routerLink="/user-profile/{{activity.user.id}}">
+                      <img [src]="getUserImage(activity.user.image)" alt="" />
+                    </a>
+                  </div>
+                  <div class="ml-3">
+                    <p>
+                      <a routerLink="/user-profile/{{activity.user.id}}">
+                        <strong class="bid-title-user">{{ activity.user.name }}</strong>
+                      </a> made a
+                      <strong class="activity-item-bettotal">{{ activity.finalPrice | currency }}</strong>
+                      bid
+                    </p>
+
+                    <p class="bid-date-user">{{ activity?.timestamp?._seconds | amFromUnix | amTimeAgo }}</p>
+                  </div>
+                </div>
+                <p [innerHTML]="activity.comment"> </p>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pt-5" *ngIf="listings && listings.length > 1">
+  <div class="container">
+    <div class="header-section d-flex" *ngIf="detail != null">
+      <h2>Other vehicles to consider</h2>
+      <!-- <a routerLink="/see-all" class="btn-seeall ml-md-auto">See All</a> -->
+    </div>
+
+    <ngx-slick class="slider-bid slider" [config]="listingsSlideConfig">
+      <!-- car -->
+      <ng-container *ngFor="let car of (listings | slice: 0:6); let i = index">
+        <div ngxSlickItem *ngIf="detail != null && car.id != detail.id">
+          <div class="box-car-item" [class.loading]="!car.model">
+            <button class="btn-like" *ngIf="user != null" [class.actived]="checkFollowing(car.id, i)" (click)="toggleFollowing(car.id, i)"
+              id="btnLike{{i}}"></button>
+
+            <ngx-slick #sliderChildren class="box-car-slides" [config]="listingsSlideInnerConfig">
+              <ng-container *ngFor="let image of car?.approval; let i = index">
+                <div ngxSlickItem *ngIf="i < 5">
+                  <a (click)="openBid(car.id)">
+                    <img [src]="image" alt="" />
+                  </a>
+                </div>
+              </ng-container>
+            </ngx-slick>
+
+            <a (click)="openBid(car.id)">
+              <div class="box-car-content">
+                <div class="box-car-data">
+                  <h3>{{ car.year }} {{ car.brand }} {{ car.model }}</h3>
+                  <span class="box-car-city" *ngIf="car.address != undefined"> {{car.address.city}}, {{car.address.state}}, {{car.address.country}}</span>
+                </div>
+
+                <div class="list-area-pregressbar" *ngIf="car.auctionStart && car.auctionStart._seconds">
+                  <div class="progressbar" [style.width]="percentage(car.auctionStart._seconds) + '%'"></div>
+                </div>
+
+
+                <div class="box-car-price d-flex">
+                  <div class="flex-fill">
+                    <span>Current bid</span>
+                    <p class="box-car-item-price">{{ (car.price ? car.price : 0) | currency }}</p>
+                  </div>
+                  <div class="box-car-time-left flex-fill" *ngIf="car.auctionStart && car.auctionStart._seconds">
+                    <span>Time Left:</span>
+                    <span class="car-time-countdown">
+                      <countdown [config]="{ leftTime: timeLeft(car.auctionStart._seconds) - dateNow }">$!d!d $!h!h</countdown>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </ng-container>
+      <!-- Car -->
+    </ngx-slick>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<ng-template #modalContactOwner let-modal>
+  <div id="modalContactOwner">
+
+    <div class="modal-body">
+      <button type="button" class="close" (click)="modal.dismiss()" style="right: 25px;top: 25px;z-index: 2;position: absolute;">
+        <i class="icon ion-md-close"></i>
+      </button>
+      <h3>Contact Owner</h3>
+      <form name="frmContact" #frmContact (ngSubmit)="sendMessage(modalSuccess)">
+        <label>Message</label>
+        <textarea name="message" #message [(ngModel)]="frmContactData.message" required placeholder="Type here"></textarea>
+
+        <div class="d-flex">
+          <button type="button" class="close contact-cancel" (click)="modal.dismiss()">Cancel</button>
+          <button class="modal-action-button modal-btn" type="submit">Send via email</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</ng-template>
+
+<!-- PDF -->
+<ng-template #modalPdfViewer let-modal>
+  <div id="modalPdfViewer">
+
+    <div class="modal-body">
+      <button type="button" class="close" (click)="modal.dismiss()" style="right: 25px;top: 25px;z-index: 2;position: absolute;">
+        <i class="icon ion-md-close"></i>
+      </button>
+      <i class="fas fa-cog fa-spin" [hidden]="!isLoading"></i>
+      <pdf-viewer [src]="currentPdfSrc" [render-text]="true" [fit-to-page]="true" style="display: block;" (on-progress)="isLoading = true"
+        (after-load-complete)="isLoading = false"></pdf-viewer>
+    </div>
+
+  </div>
+</ng-template>
+
+<ng-template #modalRequestInspection let-modal>
+
+  <div id="modalRequestInspection">
+
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-sm-12 col-md-6 d-flex" style="align-items: center; border-right: 1px solid rgba(171,180,189, 0.5)">
+          <div class="p-4 text-center">
+            <img width="200px" src="assets/images/price-299.svg">
+            <h3 class="inspc-title">Request Inspection</h3>
+            <!-- <p class="inspc-billed">Billed now: $299</p> -->
+            <p class="inspc-desc">You’ll be charged $299.00 for the pre-purchase inspection. You will receive the inspection report by email as
+              soon as the inspection is complete.</p>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-6 inspc-info-car pl-0">
+          <button type="button" class="close" (click)="modal.dismiss()">
+            <i class="icon ion-md-close"></i>
+          </button>
+          <img style="object-fit: cover; object-position: center;" [src]="makeTrustedImage(detail?.cover)" alt="" />
+
+          <div class="p-4">
+            <h3 class="inspc-info-title">{{ detail.year }} {{ detail.brand }} {{ detail.model }}</h3>
+            <p class="inspc-info-address" *ngIf="detail.address">{{detail.address.city}}, {{detail.address.country}}</p>
+            <hr>
+            <div class="inspc-buttons d-flex">
+              <button class="btn modal-action-cancel float-left" style="border: none; padding: 0px;" (click)="modal.dismiss()">Close</button>
+              <button class="modal-btn float-right" (click)="paymentInfo?.paymentMethodRegistered ? requestInspection() : modal.dismiss(); creditCard.openModal()">
+                <i class="fas fa-cog fa-spin" [hidden]="!isLoading"></i> Buy Now</button>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</ng-template>
+
+<app-credit-card #creditCard (savedCard)="requestInspection()"></app-credit-card>
+
+<ng-template #modalConfirmBid let-modal>
+  <div id="modalConfirmBid">
+
+    <div class="modal-header">
+      <button type="button" class="close" (click)="modal.dismiss()">
+        <i class="icon ion-md-close"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="row">
+        <h3>Confirm Bid</h3>
+        <p>By clicking
+          <b>Confirm</b>, you are committing to buy this item from the seller. If you are the winning bidder be aware to read
+          and agree to terms and conditions.</p>
+      </div>
+      <div class="row confirm-bid-details">
+        <div class="col-6">
+          Your bid amount:
+          <b>{{bidForm.value.amount | currency }}</b>
+        </div>
+        <div class="col-6">
+          <button type="button" (click)="submitBid() " class="bid-now-btn" [disabled]="bidForm.invalid">
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #modalSuccess let-modal>
+  <div id="modalSuccess">
+
+    <div class="modal-header">
+      <button type="button" class="close" (click)="modal.dismiss()">
+        <i class="icon ion-md-close"></i>
+      </button>
+    </div>
+
+    <div class="modal-body" style="padding:0 30px 30px 30px;">
+      <img src="assets/images/registersucessfully-icon.jpg" alt="" style="width:120px;" />
+      <h5 class="modal-title" id="modalSignUpSuccessLabel">Succesfully! Thank you for your request!</h5>
+
+      <button class="modal-action-button modal-btn" (click)="modal.dismiss()">Close</button>
+    </div>
+
+  </div>
+</ng-template>
+
+<ng-template #modalReportSuccess let-modal>
+  <div id="modalReportSuccess">
+
+    <div class="modal-header">
+      <button type="button" class="close" (click)="modal.dismiss()">
+        <i class="icon ion-md-close"></i>
+      </button>
+    </div>
+
+    <div class="modal-body" style="padding:0 30px 30px 30px;">
+      <img src="assets/images/registersucessfully-icon.jpg" alt="" style="width:120px;" />
+      <h5 class="modal-title" id="modalSignUpSuccessLabel">Report sent successfully</h5>
+
+      <button class="modal-action-button modal-btn" (click)="modal.dismiss()">Close</button>
+    </div>
+
+  </div>
+</ng-template>
+
+<ng-template #modalReportComment let-modal>
+  <div id="modalReportComment">
+
+    <div class="modal-header bb">
+      <h3 class="modal-title">
+        Report Comment
+      </h3>
+      <button type="button" class="close" (click)="modal.dismiss()">
+        <i class="icon ion-md-close"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <img src="assets/images/alert-icon.png" alt="" class="col-2" style="max-width: 97px; max-height: 76px;" />
+        <p class="col report-text">All reports are strictly confidential. What best describes this?</p>
+      </div>
+      <div class="row" style="margin-top: 25px;">
+        <div class="col-12">
+          <div class="custom-control custom-radio">
+            <input type="radio" id="reason-violence" value="Violence or harmful behavior" name="reason" [(ngModel)]="reportMessage.message"
+              class="custom-control-input">
+            <label class="custom-control-label" for="reason-violence">Violence or harmful behavior</label>
+          </div>
+          <div class="custom-control custom-radio">
+            <input type="radio" id="reason-harassment" value="Personal attack" name="reason" [(ngModel)]="reportMessage.message" class="custom-control-input">
+            <label class="custom-control-label" for="reason-harassment">Personal attack</label>
+          </div>
+          <div class="custom-control custom-radio">
+            <input type="radio" id="reason-unauthorized" value="Unauthorized Sales" [(ngModel)]="reportMessage.message" name="reason"
+              class="custom-control-input">
+            <label class="custom-control-label" for="reason-unauthorized">Unauthorized Sales</label>
+          </div>
+          <div class="custom-control custom-radio">
+            <input type="radio" id="reason-other" name="reason" value="other" [(ngModel)]="reportMessage.message" class="custom-control-input">
+            <label class="custom-control-label" for="reason-other">Other</label>
+            <input class="form-control" type="text" maxlength="30" [disabled]="reportMessage.message != 'other'" [(ngModel)]="reportMessage.other"
+              placeholder="Other reason">
+          </div>
+        </div>
+        <button class="modal-action-cancel col-6 float-left" style="margin-top: 20px;border:0px" (click)="modal.dismiss()">Close</button>
+        <div class="col-6 float-right">
+          <button type="button" (click)="submitReport()" class="modal-action-button modal-btn">
+            Send Report
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Gallery  -->
+<div>
+  <ks-modal-gallery [id]="6" [buttonsConfig]="customButtonsConfig" (buttonBeforeHook)="onCustomButtonBeforeHook($event)" (buttonAfterHook)="onCustomButtonAfterHook($event)"
+    [modalImages]="gallery['full']" [currentImageConfig]="{loadingConfig: {enable: true, type: 4}, previewConfig:{visible:false}}"
+    [plainGalleryConfig]="plainGalleryConfig"></ks-modal-gallery>
+
+    <ks-modal-gallery [id]="1" [buttonsConfig]="customButtonsConfig" 
+    (buttonBeforeHook)="onCustomButtonBeforeHook($event)"
+    (buttonAfterHook)="onCustomButtonAfterHook($event)" [modalImages]="gallery['approval']" [currentImageConfig]="{loadingConfig: {enable: true, type: 4}}"
+    [plainGalleryConfig]="plainGalleryConfig"></ks-modal-gallery>
+<ks-modal-gallery [id]="2" [buttonsConfig]="customButtonsConfig" 
+    (buttonBeforeHook)="onCustomButtonBeforeHook($event)"
+    (buttonAfterHook)="onCustomButtonAfterHook($event)" [modalImages]="gallery['exterior']" [currentImageConfig]="{loadingConfig: {enable: true, type: 4}}"
+    [plainGalleryConfig]="plainGalleryConfig"></ks-modal-gallery>
+<ks-modal-gallery [id]="3" [buttonsConfig]="customButtonsConfig" 
+    (buttonBeforeHook)="onCustomButtonBeforeHook($event)"
+    (buttonAfterHook)="onCustomButtonAfterHook($event)" [modalImages]="gallery['underside']" [currentImageConfig]="{loadingConfig: {enable: true, type: 4}}"
+    [plainGalleryConfig]="plainGalleryConfig"></ks-modal-gallery>
+<ks-modal-gallery [id]="4" [buttonsConfig]="customButtonsConfig" 
+    (buttonBeforeHook)="onCustomButtonBeforeHook($event)"
+    (buttonAfterHook)="onCustomButtonAfterHook($event)" [modalImages]="gallery['engine']" [currentImageConfig]="{loadingConfig: {enable: true, type: 4}}"
+    [plainGalleryConfig]="plainGalleryConfig"></ks-modal-gallery>
+<ks-modal-gallery [id]="5" [buttonsConfig]="customButtonsConfig" 
+    (buttonBeforeHook)="onCustomButtonBeforeHook($event)"
+    (buttonAfterHook)="onCustomButtonAfterHook($event)" [modalImages]="gallery['imperfections']" [currentImageConfig]="{loadingConfig: {enable: true, type: 4}}"
+    [plainGalleryConfig]="plainGalleryConfig"></ks-modal-gallery> 
+<ks-modal-gallery [id]="7" [buttonsConfig]="customButtonsConfig" 
+    (buttonBeforeHook)="onCustomButtonBeforeHook($event)"
+    (buttonAfterHook)="onCustomButtonAfterHook($event)" [modalImages]="gallery['interior']" [currentImageConfig]="{loadingConfig: {enable: true, type: 4}}"></ks-modal-gallery>
+</div>
+</ng-container>
+<div class="pink-loading" *ngIf="isLoading || isLoadingListings"></div>

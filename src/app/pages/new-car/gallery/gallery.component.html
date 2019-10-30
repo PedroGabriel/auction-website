@@ -1,0 +1,155 @@
+<div id="breadcrumb-newcar">
+  <nav>
+    <ol>
+      <li class="waiting-approval">
+        <i class="icon ion-md-time"></i>
+      </li>
+      <li>Payment</li>
+      <li>Review</li>
+      <li>Records</li>
+      <li class="active">Gallery</li>
+      <li class="active">
+        <a routerLink="/new-car/additional-information/{{listing}}">Information</a>
+      </li>
+      <li class="waiting-approval active">
+        <i class="icon ion-md-time"></i>
+      </li>
+      <li class="active">
+        <a routerLink="/new-car/basic-information/{{listing}}">Basic</a>
+      </li>
+    </ol>
+  </nav>
+</div>
+<section class="pt-5">
+  <div class="container-add-listing">
+    <h1 class="title-listing">Gallery</h1>
+    <p class="text-inicial-listing pt-3">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus dapibus mi id ante ultrices, nec hendrerit enim hendrerit.
+      Sed nec diam turpis.
+    </p>
+    <div class="box-area-newcar mt-5 gallery-tabsupload">
+      <form class="" (ngSubmit)="submit(modalLoading)" novalidate>
+        <ul class="nav" role="tablist">
+          <ng-container *ngFor="let cat of categories; let i = index">
+            <li class="nav-item">
+              <a [class.active]="currentTab == cat" (click)="changeTab(cat)" class="nav-link" id="New{{cat}}gallery" href="#">
+                <span class="catTitle">{{cat}}</span>
+                <span *ngIf="fileList[cat].length > 0">({{fileList[cat].length}} {{fileList[cat].length == 1 ? 'image' : 'images'}})</span>
+              </a>
+            </li>
+          </ng-container>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+          <!-- Tabs -->
+          <ng-container *ngFor="let cat of categories; let i = index">
+            <div class="tab-pane fade show" id="{{cat}}" [class.active]="currentTab == cat">
+              <ul class="box-upload-eventos" *ngIf="msgEvento.length > 0">
+                <li *ngFor="let item of msgEvento">
+                  <span [innerHTML]="item"></span>
+                </li>
+              </ul>
+              <div criaturoDnd class="uploadimages form-row dropzone" (filesChangeEmiter)="onFilesChange($event, cat)" (filesInvalidEmiter)="onFileInvalids($event)"
+                (msgEventoEmiter)="onMsgEvento($event)" [enable_drag]="fileList[cat].length == 0" [allowed_extensions]="['png', 'jpg', 'bmp', 'png', 'gif', 'jpeg']">
+                <!-- No pictures -->
+                <ng-container *ngIf="fileList[cat].length == 0">
+                  <img src="assets/images/icon-photo-upload.png" class="box-upload-image" />
+                  <h2>Drag and drop photos here</h2>
+                  <small>OR</small>
+                </ng-container>
+                <!-- Has pictures -->
+                <ng-container *ngIf="fileList[cat].length > 0">
+                  <div class="gallery-cover" [style.background-image]="makeTrustedImage(cover[cat].content)" *ngIf="cat == 'exterior' && cover[cat] != null">
+
+                    <input type="file" accept="image/*" #coverUpload style="display:none" (change)="uploadCover(coverUpload.files, cat)">
+                    <button class="btn-cover" type="button" (click)="coverUpload.click()">
+                      Cover Photo
+                    </button>
+                    <div class="thumb-actions" *ngIf="fileList[cat].length == 1">
+                      <button class="btn-erase" (click)="removeCover(cat)" type="button">
+                        <img src="assets/images/icon-gallery-erase.jpg" />
+                      </button>
+                    </div>
+                  </div>
+                  <div class="thumb-group" dnd-sortable-container [sortableData]="fileList[cat]">
+                    <ng-container *ngFor="let item of fileList[cat]; let i = index">
+                      <div class="thumb-box" [style.background-image]="makeTrustedImage(item.content)" dnd-sortable [sortableIndex]="i">
+                        <div class="thumb-actions">
+                          <button class="btn-erase" (click)="removeConfirm[cat] = i" type="button" *ngIf="removeConfirm[cat] != i">
+                            <i class="icon ion-ios-trash"></i>
+                          </button>
+                          <button class="btn-erase btn-erase-confirm" (click)="removeImage(i, cat)" type="button" *ngIf="removeConfirm[cat] == i">
+                            <i class="icon ion-ios-trash"></i>
+                            <span>Remove?</span>
+                          </button>
+                          <div ngbDropdown placement="{{i != 0 && i % 4 != 0 ? 'left-bottom' : 'right-bottom'}}">
+                            <button class=" btn-setCover" ngbDropdownToggle type="button">
+                              <i class="icon ion-md-swap"></i>
+                            </button>
+                            <div ngbDropdownMenu>
+                              <ng-container *ngFor="let c of categories">
+                                <button class="dropdown-item" *ngIf="c != cat" type="button" (click)="changeCategory(cat, c, i)">Send to
+                                  <span class='catTitle'>{{c}}</span>
+                                </button>
+                              </ng-container>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-container>
+                    <div class="thumb-box-add" (click)="inputInterior.click()">
+                      <i class="icon ion-md-add-circle-outline"></i>
+                      <span>Add another</span>
+                    </div>
+                  </div>
+                </ng-container>
+                <input type="file" multiple accept="image/*" #inputInterior style="display:none" (change)="uploadFiles(inputInterior.files, cat)">
+                <button *ngIf="fileList[cat].length == 0" class="  btn-upload-photo" (click)="inputInterior.click()" type="button">Select Files</button>
+              </div>
+
+            </div>
+          </ng-container>
+          <!-- Tabs end -->
+        </div>
+
+        <div class="p-5">
+          <hr class="mt-5" />
+          <div class="form-row">
+
+            <div class="col-6">
+              <button type="button" (click)="goBack()" class="btn-back-style float-right" [disabled]="isLoading">
+                <i class="mr-5 float-left icon ion-md-arrow-back"></i>
+                Back
+              </button>
+            </div>
+            <div class="col-6">
+              <button (click)="submit(modalLoading)" class="btn-newcar-style float-right" [disabled]="isLoading">
+                <i class="fas fa-cog fa-spin" [hidden]="!isLoading"></i> Next step
+                <i class="ml-5 float-right icon ion-md-arrow-forward"></i>
+              </button>
+            </div>
+          </div>
+          <div class="alert alert-danger" style="margin:20px 20px 0px 20px;" *ngIf="showError">
+            <ng-container *ngFor="let cat of categories">
+              <span *ngIf="fileList[cat].length == 0 ">Please upload at least a
+                <b>{{cat}}</b> photo.
+                <br />
+              </span>
+            </ng-container>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<ng-template #modalLoading let-modal>
+  <div id="modalLoading">
+
+    <div class="modal-body">
+      <div class="row">
+        <h3>Processing</h3>
+        <p>Uploading photo {{filesUploaded}} of {{filesQty}}... Please wait!</p>
+      </div>
+    </div>
+  </div>
+</ng-template>

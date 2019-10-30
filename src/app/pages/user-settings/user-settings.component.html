@@ -1,0 +1,101 @@
+<section class="pt-5">
+  <div class="container" *ngIf="!isLoading && user">
+    <div class="area-account-settings">
+      <div class="p-4 area-account-settings-title">
+        <h1>Settings</h1>
+      </div>
+      <form name="frmSettings" #frmSettings (ngSubmit)="submit()">
+      <div class="p-4">
+<!--         <div class="row area-account-row">
+          <div class="col-sm-6 col-md-3 account-settings-type"><strong>Comments order</strong></div>
+          <div class="col-sm-6 col-md-6 account-settings-value">
+            <select name="commentsOrder" id="" [(ngModel)]="user.settings.commentsOrder">
+              <option [value]="'newest'">Newest First</option>
+              <option [value]="'oldest'">Oldest First</option>
+            </select>
+          </div>
+        </div>
+        <hr> -->
+        <div class="row area-account-row">
+          <div class="col-sm-6 col-md-3 account-settings-type"><strong>Play bid sound</strong></div>
+          <div class="col-sm-6 col-md-6 account-settings-value">
+            <select name="bidSound" id=""  [(ngModel)]="user.settings.bidSound">
+              <option [value]="1">On</option>
+              <option [value]="0">Off</option>
+            </select>
+          </div>
+        </div>
+        <hr>
+        <div class="row area-account-row">
+          <div class="col-sm-6 col-md-3 account-settings-type"><strong>Play comment sound</strong></div>
+          <div class="col-sm-6 col-md-6 account-settings-value">
+             <select name="commentSound" id=""  [(ngModel)]="user.settings.commentSound">
+              <option [value]="1">On</option>
+              <option [value]="0">Off</option>
+            </select>
+          </div>
+        </div>
+        <hr>
+        <div class="row area-account-row">
+          <div class="col-sm-6 col-md-3 account-settings-type"><strong>Receive emails about watched listings</strong></div>
+          <div class="col-sm-6 col-md-6 account-settings-value">
+            <select name="enableEmailMention" id=""  [(ngModel)]="user.settings.enableEmailWatched">
+              <option [value]="1">On</option>
+              <option [value]="0">Off</option>
+            </select>
+          </div>
+        </div>
+        
+<!-- 
+        <hr>
+        <div class="row area-account-row">
+          <div class="col-sm-6 col-md-3 account-settings-type"><strong>Receive email when my username is @Mentioned in comments</strong></div>
+          <div class="col-sm-6 col-md-6 account-settings-value">
+            <select name="enableEmailMention" id=""  [(ngModel)]="user.settings.enableEmailMention">
+              <option [value]="1">On</option>
+              <option [value]="0">Off</option>
+            </select>
+          </div>
+        </div>
+        
+        <hr>
+         <div class="row area-account-row">
+          <div class="col-sm-6 col-md-3 account-settings-type"><strong>Receive email about new listings for models I’ve signed up for</strong></div>
+          <div class="col-sm-6 col-md-6 account-settings-value">
+            <select name="enableEmailListings" id=""  [(ngModel)]="user.settings.enableEmailListings">
+              <option [value]="1">On</option>
+              <option [value]="0">Off</option>
+            </select>
+          </div>
+        </div>
+        
+        <hr>
+        <div class="row area-account-row">
+          <div class="col-sm-6 col-md-3 account-settings-type"><strong>Receive text message notifications</strong></div>
+          <div class="col-sm-6 col-md-6 account-settings-value">
+            <select name="enableTextNotifications" id=""  [(ngModel)]="user.settings.enableTextNotifications">
+              <option [value]="1">On</option>
+              <option [value]="0">Off</option>
+            </select>
+          </div>
+        </div>
+        
+        <hr>
+        <div class="row area-account-row">
+          <div class="col-sm-6 col-md-3 account-settings-type"><strong>Text messaging phone number</strong></div>
+          <div class="col-sm-6 col-md-6 account-settings-value">
+            <select name="enableSms" id=""  [(ngModel)]="user.settings.enableSms" >
+              <option [value]="1">On</option>
+              <option [value]="0">Off</option>
+            </select><br />
+            <span>Only USA phone numbers are supported at this time. Please enter your full 10-digit number.</span>
+          </div>
+        </div>
+        <hr> -->
+
+        <button type="submit" class="btn-newcar-style">Save Settings</button>
+      </div>
+      </form>      
+    </div>
+  </div>
+</section>

@@ -1,0 +1,201 @@
+<style>
+  .dropdown-menu {
+    overflow-x: hidden !important;
+    z-index: 1021;
+  }
+
+  .dropdown input {
+    display: none;
+  }
+
+  .button-search-filters.active {
+    background-color: #f05b7a;
+    color: #FFF;
+  }
+
+  agm-map {
+    width: 100%;
+    height: 100%;
+  }
+
+  .search-results .box-car-item {
+    min-width: 360px;
+  }
+</style>
+<section>
+  <div class="container pt-4 ">
+    <div class="search-filters d-inline-flex">
+      <div class="dropdown">
+        <button class="button-search-filters" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-text="Brand">
+          Brand
+        </button>
+        <input name="brand" value="" data-search="1" />
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" *ngIf="brands">
+          <a class="dropdown-item" (click)="changeBrand('');" data-value="">All</a>
+          <a class="dropdown-item" [attr.data-value]="brand" (click)="changeBrand(brand)" *ngFor="let brand of brands">{{brand}}</a>
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <button class="button-search-filters" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-text="Model">
+          Model
+        </button>
+        <input name="model" value="" data-search="1" />
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" *ngIf="currentBrand && brandsModels[currentBrand]">
+          <a class="dropdown-item" data-value="" (click)="changeModel('');">All</a>
+          <a class="dropdown-item" [attr.data-value]="model" (click)="changeModel(model)" *ngFor="let model of brandsModels[currentBrand]">{{model}}</a>
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <button class="button-search-filters" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-text="Year">
+          Year
+        </button>
+        <input name="year" value="" data-search="1" />
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" (click)="changeModel('');">All</a>
+          <a class="dropdown-item" [attr.data-value]="year" (click)="changeYear(year)" *ngFor="let year of range(1900, currentYear)">{{ year }}</a>
+        </div>
+      </div>
+
+      <!--       <div class="dropdown">
+        <button
+          class="button-search-filters"
+          type="button"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+          data-text="Location"
+          onClick="$('.input-search').focus(); return false;"
+        >
+          Location
+        </button> -->
+      <!-- <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item"  data-value="">Select</a>
+          <a class="dropdown-item"  data-value="Location 1">Location 1</a>
+        </div> -->
+      <!-- </div> -->
+
+      <div class="dropdown">
+        <button #priceButton class="button-search-filters" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" (click)="togglePriceFilter()">
+          Price
+        </button>
+        <div #priceBox class="price-filter-box " *ngIf="showPriceFilter">
+          <form name="frmPriceFilter">
+            <!-- <ng5-slider [(value)]="minPrice" [(highValue)]="maxPrice" [options]="options" (valueChange)="changedPriceFilter()" ></ng5-slider> -->
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <div class="form-group">
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Min</span>
+                      </div>
+                      <input type="number" name="minPrice" (focusout)="changedPriceFilter()" class=" form-control" [(ngModel)]="minPrice" placeholder="Min price"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <div class="form-group">
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Max</span>
+                      </div>
+                      <input type="number" name="maxPrice" (focusout)="changedPriceFilter()" class=" form-control " [(ngModel)]="maxPrice" placeholder="Max price"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <button style="padding: 10px 16px;" (click)="changedPriceFilter()" class="btn-newcar-style float-right">Filter</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="search-results">
+
+      <input type="hidden" name="latitude" value="" #searchLatitude data-search />
+      <input type="hidden" name="longitude" value="" #searchLongitude data-search />
+
+      <div class="row">
+        <div class="col-md-8 d-flex flex-wrap" *ngIf="listings">
+          <div *ngIf="listings.length == 0 && !isLoading" class="box-error">
+            <h4 class="error">
+              <i class="icon ion-ios-search"></i>
+              <br /> No results found!
+              <br />
+              <small>Please try again.</small>
+            </h4>
+          </div>
+
+          <div class="box-car-item" [class.loading]="car.loading" *ngFor="let car of listings">
+            <!--  <button class="btn-like" [class.actived]="car.isFavorite==1" (click)="car.isFavorite == 0 ? car.isFavorite = 1 : car.isFavorite = 0"></button> -->
+            <ngx-slick #sliderChildren class="box-car-slides" [config]="listingsSlideInnerConfig">
+              <ng-container *ngFor="let image of car?.approval; let i = index">
+                <div ngxSlickItem *ngIf="i < 5">
+                  <a routerLink="/bid-detail/{{car.id}}">
+                    <img [src]="image" alt="" />
+                  </a>
+                </div>
+              </ng-container>
+            </ngx-slick>
+
+            <a routerLink="/bid-detail/{{car.id}}">
+              <div class="box-car-content">
+                <div class="box-car-data">
+                  <h3>{{ car.year }} {{ car.brand }} {{ car.model }}</h3>
+                  <span class="box-car-city" *ngIf="car.address != undefined"> {{car.address.city}}, {{car.address.state}}, {{car.address.country}}</span>
+                </div>
+
+                <div class="list-area-pregressbar" *ngIf="car.auctionStart && car.auctionStart._seconds">
+                  <div class="progressbar" [style.width]="percentage(car.auctionStart._seconds) + '%'"></div>
+                </div>
+
+
+                <div class="box-car-price d-flex">
+                  <div class="flex-fill">
+                    <span>Current bid</span>
+                    <p class="box-car-item-price">{{ (car.price ? car.price : 0) | currency }}</p>
+                  </div>
+                  <div class="box-car-time-left flex-fill" *ngIf="car.auctionStart && car.auctionStart._seconds">
+                    <span>Time Left:</span>
+                    <span class="car-time-countdown">
+                      <countdown [config]="{ leftTime: timeLeft(car.auctionStart._seconds) - dateNow }">$!d!d $!h!h</countdown>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+
+        </div>
+        <div class="col-md-4 ">
+          <div class="sticky-top pt-4">
+            <div id="map" class="map-search-result" style="background-color: #d2d2d2;">
+              <agm-map (mapReady)="mapReady($event)" [latitude]="latitude" [longitude]="longitude" [zoom]="zoom">
+                <agm-marker-cluster imagePath="assets/images/cluster/m">
+                  <agm-marker *ngFor="let car of listings; let i = index" [latitude]="car.address.location['_latitude']" [longitude]="car.address.location['_longitude']"
+                    [label]="{color: car.markerColor||'black', text: car.price|currency}" [iconUrl]="car.markerIcon||'assets/images/marker-wt.png'"
+                    (mouseOver)="car.markerIcon = 'assets/images/marker-pk.png'; car.markerColor = 'white';" (mouseOut)="car.markerIcon = 'assets/images/marker-wt.png'; car.markerColor = 'black';"
+                    (markerClick)="goToListing(car.id)">
+                  </agm-marker>
+                </agm-marker-cluster>
+              </agm-map>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="pink-loading" *ngIf="isLoading"></div>

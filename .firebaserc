@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "auction-app-843e9",
+    "dev": "auctionapp-dev"
+  }
+}

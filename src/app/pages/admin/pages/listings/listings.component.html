@@ -1,0 +1,138 @@
+<section class="pt-5">
+  <div class="container">
+    <div class="header-section">
+      <div class="admin-page-title">
+        <h1>Listings</h1>
+        <p *ngIf="!isLoading && currentTab == 'live' && listings && listings.live">
+          {{ listings.live.length }} active listings
+        </p>
+        <p *ngIf="!isLoading && currentTab == 'closed' && listings && listings.closed">
+          {{ listings.closed.length }} closed listings
+        </p>
+      </div>
+      <div class="">
+        <button class="btn-admin-white" [class.active]="currentTab == 'live'" (click)="changeTab('live')">
+          Active listings
+        </button>
+        <button class="btn-admin-white" [class.active]="currentTab == 'closed'" (click)="changeTab('closed')">
+          Closed listings
+        </button>
+      </div>
+    </div>
+
+    <div style="display:none;" class="show" [class.active]="currentTab == 'live'">
+      <div class="listings-cars d-flex flex-wrap">
+        <!-- Car -->
+        <!-- 
+        <div class="box-car-item">
+          <div class="item-edit-listing">
+            <button class="btn-edt-listing">•••</button>
+            <div class="itemlist-menufloat open">
+              <a href="">Edit auction</a> <a href="">Close auction</a> <a href="">Turn Standby</a>
+            </div>
+          </div>
+
+          <div class="box-car-slides"><img src="assets/images/carslide.png" alt="" /></div>
+          <div class="list-area-pregressbar"><div class="progressbar" style="width: 16.2%;"></div></div>
+          <div class="box-car-content">
+            <div class="box-car-data">
+              <p>
+                <span><strong>Time Left:</strong> <span>3HR. 7MIN</span></span>
+              </p>
+              <h3>1966 Shelby 427 Cobra</h3>
+              <p><span>Atlanta - USA</span></p>
+            </div>
+            <div class="box-car-price">
+              <span>Current bid</span>
+              <p class="box-car-item-price">$65,00</p>
+            </div>
+          </div>
+        </div> -->
+        <ng-container *ngFor="let car of listings.live">
+          <div class="box-car-item" [class.loading]="car.loading">
+            <div class="item-edit-listing">
+              <button class="btn-edt-listing" (click)="car.menuOpen = car.menuOpen ? false : true ">•••</button>
+              <div class="itemlist-menufloat " [ngClass]="{open: car.menuOpen}" *ngIf="car.menuOpen">
+                <a (click)="clickListing(car.id)">Edit auction</a>
+                <a (click)="closeListing(car.id)">Close auction</a>
+                <a (click)="standbyListing(car.id)">Turn Standby</a>
+              </div>
+            </div>
+            <ngx-slick class="box-car-slides" [config]="listingsSlideInnerConfig">
+              <img src="{{image}}" alt="" ngxSlickItem *ngFor="let image of car?.exterior" />
+            </ngx-slick>
+            <div class="list-area-pregressbar" *ngIf="car.auctionStart && car.auctionStart._seconds">
+              <div class="progressbar" [style.width]="percentage(car.auctionStart._seconds) + '%'"></div>
+            </div>
+            <a routerLink="/bid-detail/{{car.id}}">
+              <div class="box-car-content">
+                <div class="box-car-data">
+                  <p>
+                    <span *ngIf="car.auctionStart && car.auctionStart._seconds">
+                      <strong>Time Left: </strong>
+                      <span>
+                        <countdown [config]="{ leftTime: timeLeft(car.auctionStart._seconds) - dateNow }">$!d!d $!h!h</countdown>
+                      </span>
+                    </span>
+                  </p>
+                  <h3>{{ car.year }} {{ car.brand }} {{ car.model }}
+                    <img class="inspection-badge" src="assets/images/badge.svg" alt="Inspection approved" *ngIf="car.verified">
+                  </h3>
+                  <span class="box-car-city">{{car?.address?.city}} - {{car?.address?.state}}</span>
+                </div>
+                <div class="box-car-price">
+                  <span>Current bid</span>
+                  <p class="box-car-item-price">{{ (car.price ? car.price : 0) | currency }}</p>
+                </div>
+              </div>
+            </a>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <div style="display:none;" class="show" [class.active]="currentTab == 'closed'">
+      <div class="listings-cars d-flex flex-wrap">
+        <!-- Car -->
+        <ng-container *ngFor="let car of listings.closed">
+          <div class="box-car-item" [class.loading]="car.loading">
+            <div class="item-edit-listing">
+              <button class="btn-edt-listing" (click)="car.menuOpen = car.menuOpen ? false : true ">•••</button>
+              <div class="itemlist-menufloat " [ngClass]="{open: car.menuOpen}" *ngIf="car.menuOpen">
+                <a (click)="clickListing(car.id)">Edit auction</a>
+                <a (click)="openListing(car.id)">Open auction</a>
+              </div>
+            </div>
+            <ngx-slick class="box-car-slides" [config]="listingsSlideInnerConfig">
+              <img src="{{image}}" alt="" ngxSlickItem *ngFor="let image of car?.exterior" />
+            </ngx-slick>
+            <div class="list-area-pregressbar" *ngIf="car.auctionStart && car.auctionStart._seconds">
+              <div class="progressbar" [style.width]="percentage(car.auctionStart._seconds) + '%'"></div>
+            </div>
+            <a routerLink="/bid-detail/{{car.id}}">
+              <div class="box-car-content">
+                <div class="box-car-data">
+                  <p>
+                    <span *ngIf="car.auctionStart && car.auctionStart._seconds">
+                      <strong>Time Left: </strong>
+                      <span>
+                        <countdown [config]="{ leftTime: timeLeft(car.auctionStart._seconds) - dateNow }">$!d!d $!h!h</countdown>
+                      </span>
+                    </span>
+                  </p>
+                  <h3>{{ car.year }} {{ car.brand }} {{ car.model }}</h3>
+                  <span class="box-car-city">{{car?.address?.city}} - {{car?.address?.state}}</span>
+                </div>
+                <div class="box-car-price">
+                  <span>Current bid</span>
+                  <p class="box-car-item-price">{{ (car.price ? car.price : 0) | currency }}</p>
+                </div>
+              </div>
+            </a>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="pink-loading" *ngIf="isLoading"></div>
