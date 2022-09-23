@@ -93,7 +93,7 @@ import { GalleryModule } from '@ks89/angular-modal-gallery';
     TranslateModule.forRoot(),
     NgbModule,
     AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyD7tPY7D4hPXvmHRvhz7idWtL-fik7pI_E',
+      apiKey: '***REMOVED***',
       libraries: ['places'],
       language: 'en'
     }),
