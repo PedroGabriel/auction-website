@@ -10,7 +10,7 @@ const routes: Routes = [
     {
       path: '',
       component: HomeComponent,
-      data: { title: extract('Pink Slip Daddys'), HideSearch: true }
+      data: { title: extract('***REMOVED***'), HideSearch: true }
     }
   ])
 ];
